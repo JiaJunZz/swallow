@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from .models import Server, Nic, ServerIp,Cpu
-from .serializers import ServerAutoSerializer, NicSerializer,ServerIpSerializer,CpuSerializer,ServerSerializer
+from .models import Server, Nic, ServerIp
+from .serializers import ServerAutoSerializer, NicSerializer,ServerIpSerializer,ServerSerializer
 # Create your views here.
 
 class ServerAutoViewset(viewsets.ModelViewSet):
@@ -51,13 +51,3 @@ class ServerIpViewset(viewsets.ReadOnlyModelViewSet):
     """
     queryset = ServerIp.objects.all()
     serializer_class = ServerIpSerializer
-
-class CpuViewset(viewsets.ReadOnlyModelViewSet):
-    """
-    retrieve:
-        返回Cpu信息
-    list:
-        返回Cpu列表
-    """
-    queryset = Cpu.objects.all()
-    serializer_class = CpuSerializer

@@ -21,7 +21,7 @@ from idc.views import IdcViewset, CabinetViewset
 from users.views import UserViewset
 from manufactory.views import ManufactoryViewset, ProductModelViewset
 from supplier.views import SupplierViewset
-from server.views import ServerAutoViewset,NicViewset,ServerIpViewset,CpuViewset,ServerViewset
+from server.views import ServerAutoViewset,NicViewset,ServerIpViewset,ServerViewset
 
 route = DefaultRouter()
 route.register("idc", IdcViewset, base_name="idc")
@@ -34,7 +34,6 @@ route.register("serverAuto", ServerAutoViewset, base_name="serverAuto")
 route.register("server", ServerViewset, base_name="server")
 route.register("nic", NicViewset, base_name="nic")
 route.register("serverip", ServerIpViewset, base_name="serverip")
-route.register("cpu", CpuViewset, base_name="cpu")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
