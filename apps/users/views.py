@@ -16,3 +16,4 @@ class UserViewset(viewsets.ReadOnlyModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
+

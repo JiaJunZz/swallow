@@ -43,6 +43,7 @@ class ServerAutoSerializer(serializers.Serializer):
             attrs["productmodel"] = self.create_productmodel(attrs["productmodel"], manufactory_obj)
         return attrs
 
+
     @staticmethod
     def create_manufactory(manufactory_name):
         return Manufactory.objects.create(manufactory_name=manufactory_name)
@@ -95,7 +96,7 @@ class ServerAutoSerializer(serializers.Serializer):
                 nic_obj = self.create_nic(n, server_obj)
                 self.check_serverip(nic_obj, ip_info)
             post_nic_queryset.append(nic_obj)
-        for nic_obj in set(serverip_queryset) - set(post_nic_queryset):  # 删除更新之前的网卡信息
+        for nic_obj in set(serverip_queryset) - set(post_nic_queryset):  # 比对删除post之前的网卡信息
             nic_obj.delete()
 
     @staticmethod

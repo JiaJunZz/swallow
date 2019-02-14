@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from .models import Server, Nic, ServerIp
 from .serializers import ServerAutoSerializer, NicSerializer,ServerIpSerializer,ServerSerializer
+from .filter import ServerFilter
 # Create your views here.
 
 class ServerAutoViewset(viewsets.ModelViewSet):
@@ -31,6 +32,8 @@ class ServerViewset(viewsets.ReadOnlyModelViewSet):
     """
     queryset = Server.objects.all()
     serializer_class = ServerSerializer
+    filter_class = ServerFilter
+    filterset_fields = ('manufactory')
 
 class NicViewset(viewsets.ReadOnlyModelViewSet):
     """

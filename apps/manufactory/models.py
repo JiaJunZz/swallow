@@ -17,6 +17,7 @@ class Manufactory(models.Model):
     class Meta:
         verbose_name = '制造商'
         verbose_name_plural = verbose_name
+        ordering = ['id']
 
     def __str__(self):
         return self.manufactory_name
@@ -33,6 +34,7 @@ class ProductModel(models.Model):
     class Meta:
         verbose_name = "产品型号"
         verbose_name_plural = verbose_name
+        ordering = ['id']
 
     def __str__(self):
         return self.product_name

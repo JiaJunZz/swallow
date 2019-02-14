@@ -17,6 +17,7 @@ class Idc(models.Model):
     class Meta:
         verbose_name = 'IDC机房'
         verbose_name_plural = verbose_name
+        ordering = ['id']
 
     def __str__(self):
         return self.idc_name
@@ -32,6 +33,7 @@ class Cabinet(models.Model):
     class Meta:
         verbose_name = '机柜'
         verbose_name_plural = verbose_name
+        ordering = ['id']
 
     def __str__(self):
         return self.cabinet_name
