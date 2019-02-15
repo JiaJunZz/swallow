@@ -19,5 +19,5 @@ class UserViewset(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all().order_by('id')
     serializer_class = UserSerializer
     # authentication_classes = (SessionAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
