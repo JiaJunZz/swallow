@@ -17,15 +17,17 @@ from django.contrib import admin
 from django.urls import path, re_path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework.documentation import include_docs_urls
-from idc.views import IdcViewset, CabinetViewset
+from idc.views import IdcViewset,CabinetViewset
 from users.views import UserViewset
 from manufactory.views import ManufactoryViewset, ProductModelViewset
 from supplier.views import SupplierViewset
 from server.views import ServerAutoViewset,NicViewset,ServerIpViewset,ServerViewset
+from cabinetunit.views import CabinetUnitViewset
 
 route = DefaultRouter()
 route.register("idc", IdcViewset, base_name="idc")
 route.register("cabinet", CabinetViewset, base_name="cabinet")
+route.register("cabinetunit", CabinetUnitViewset, base_name="cabinetunit    ")
 route.register("users", UserViewset, base_name="users")
 route.register("manufactory", ManufactoryViewset, base_name="manufactory")
 route.register("productmodel", ProductModelViewset, base_name="productmodel")

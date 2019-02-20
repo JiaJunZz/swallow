@@ -27,8 +27,9 @@ class Cabinet(models.Model):
     """
     机柜模型
     """
-    idc = models.ForeignKey(Idc, verbose_name="所处机房", on_delete=models.CASCADE, null=True)
     cabinet_name = models.CharField("机柜号", max_length=10)
+    idc = models.ForeignKey(Idc, verbose_name="所处机房", on_delete=models.CASCADE, null=True, blank=True)
+
 
     class Meta:
         verbose_name = '机柜'
@@ -37,3 +38,4 @@ class Cabinet(models.Model):
 
     def __str__(self):
         return self.cabinet_name
+

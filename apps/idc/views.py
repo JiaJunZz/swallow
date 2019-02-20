@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from .models import Idc, Cabinet
-from .serializers import IdcSerializer, CabinetSerializer
+from .models import Idc,Cabinet
+from .serializers import IdcSerializer,CabinetSerializer
 
 
 class IdcViewset(viewsets.ModelViewSet):

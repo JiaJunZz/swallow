@@ -22,13 +22,20 @@ class ServerAutoViewset(viewsets.ModelViewSet):
     queryset = Server.objects.all()
     serializer_class = ServerAutoSerializer
 
-class ServerViewset(viewsets.ReadOnlyModelViewSet):
+class ServerViewset(viewsets.ModelViewSet):
     """
     retrieve:
         返回服务器信息
     list:
         返回服务器列表
-
+    update:
+        更新服务器信息
+    partial_update:
+        更新部分服务器字段
+    destory:
+        删除服务器信息
+    create:
+        创建服务器记录
     """
     queryset = Server.objects.all()
     serializer_class = ServerSerializer

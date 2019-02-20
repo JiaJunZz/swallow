@@ -122,7 +122,6 @@ class ServerAutoSerializer(serializers.Serializer):
                 serverip_obj = self.create_serverip(nic_obj, ip)
             post_serverip_queryset.append(serverip_obj)
         for serverip_obj in set(serverip_queryset) - set(post_serverip_queryset):
-            print(serverip_obj)
             serverip_obj.delete()
 
     @staticmethod
