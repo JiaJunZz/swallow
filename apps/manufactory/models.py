@@ -8,7 +8,7 @@ class Manufactory(models.Model):
     厂商模型
     """
     manufactory_name = models.CharField("厂商名称", max_length=64, db_index=True, unique=True, help_text="厂商名称")
-    tel_num = models.CharField("支持电话",blank=True, null=True, max_length=32, help_text="支持电话")
+    phone = models.CharField("支持电话",blank=True, null=True, max_length=32, help_text="支持电话")
     remark = models.TextField("备注", blank=True, null=True, max_length=255, help_text="备注")
 
     # create_date = models.DateTimeField(verbose_name=u'创建时间', blank=True, null=True, auto_now_add=True, max_length=32)
