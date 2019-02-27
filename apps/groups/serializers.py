@@ -6,15 +6,15 @@
 
 from rest_framework import serializers
 from django.contrib.auth.models import Group
+from users.serializers import UserSerializer
 
 
 class GroupsSerializer(serializers.ModelSerializer):
     """
     Groups序列化类
     """
+    user_set = UserSerializer(many=True, read_only=True)
+
     class Meta:
         model = Group
-        fields = ("id","name")
-
-
-
+        fields = ("id", "name","user_set")

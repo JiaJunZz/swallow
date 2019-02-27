@@ -53,8 +53,7 @@ class Nic(models.Model):
     """
     nic_name = models.CharField("网卡名", max_length=16, help_text="网卡名")
     mac_address = models.CharField("MAC地址", max_length=64, help_text="MAC地址")
-    server = models.ForeignKey(Server, on_delete=models.CASCADE, verbose_name="所属服务器", help_text="所属服务器")
-    remark = models.TextField("备注", null=True, max_length=255, help_text="备注")
+    server = models.ForeignKey(Server, on_delete=models.CASCADE, related_name="net",verbose_name="所属服务器", help_text="所属服务器")
 
     class Meta:
         verbose_name = '网卡'
@@ -72,7 +71,6 @@ class ServerIp(models.Model):
     ip_addr = models.GenericIPAddressField("ip地址", max_length=15, db_index=True, unique=True, help_text="ip地址")
     netmask = models.CharField("子网掩码", max_length=15, help_text="子网掩码")
     nic = models.ForeignKey(Nic, on_delete=models.CASCADE, verbose_name="所属网卡", help_text="所属网卡")
-    remark = models.TextField("备注", null=True, max_length=255, help_text="备注")
 
     class Meta:
         verbose_name = 'IP地址'

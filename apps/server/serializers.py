@@ -43,7 +43,6 @@ class ServerAutoSerializer(serializers.Serializer):
             attrs["productmodel"] = self.create_productmodel(attrs["productmodel"], manufactory_obj)
         return attrs
 
-
     @staticmethod
     def create_manufactory(manufactory_name):
         return Manufactory.objects.create(manufactory_name=manufactory_name)
@@ -131,16 +130,6 @@ class ServerAutoSerializer(serializers.Serializer):
         return serverip_obj
 
 
-class ServerSerializer(serializers.ModelSerializer):
-    """
-    网卡序列化类
-    """
-
-    class Meta:
-        model = Server
-        fields = "__all__"
-
-
 class NicSerializer(serializers.ModelSerializer):
     """
     网卡序列化类
@@ -148,6 +137,17 @@ class NicSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Nic
+        fields = "__all__"
+
+
+class ServerSerializer(serializers.ModelSerializer):
+    """
+    服务器序列化类
+    """
+    net = NicSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Server
         fields = "__all__"
 
 
