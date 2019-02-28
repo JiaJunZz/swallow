@@ -145,6 +145,8 @@ class ServerSerializer(serializers.ModelSerializer):
     服务器序列化类
     """
     net = NicSerializer(many=True, read_only=True)
+    create_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S",label="创建时间", help_text="创建时间",required=False, read_only=True)
+    update_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S",label="更新时间", help_text="更新时间",required=False, read_only=True)
 
     class Meta:
         model = Server
