@@ -18,14 +18,7 @@ from rest_framework.authtoken import views
 from django.urls import path, re_path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework.documentation import include_docs_urls
-from idc.views import IdcViewset,CabinetViewset
-from users.views import UserViewset
-from manufactory.views import ManufactoryViewset, ProductModelViewset
-from supplier.views import SupplierViewset
-from server.views import ServerAutoViewset,NicViewset,ServerIpViewset,ServerViewset
-from cabinetunit.views import CabinetUnitViewset
-from groups.router import group_router
-from users.router import user_router
+from permcontrol.router import permcontrol_router
 from supplier.router import supplier_router
 from manufactory.router import manufactory_router
 from server.router import server_router
@@ -34,8 +27,7 @@ from cabinetunit.router import cabinetunit_router
 
 route = DefaultRouter()
 
-route.registry.extend(group_router.registry)
-route.registry.extend(user_router.registry)
+route.registry.extend(permcontrol_router.registry)
 route.registry.extend(supplier_router.registry)
 route.registry.extend(manufactory_router.registry)
 route.registry.extend(server_router.registry)

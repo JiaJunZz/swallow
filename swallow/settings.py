@@ -44,12 +44,11 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_filters',
     'idc',
-    'users',
-    'groups',
     'manufactory',
     'supplier',
     'server',
-    'cabinetunit'
+    'cabinetunit',
+    'permcontrol'
 ]
 
 MIDDLEWARE = [
@@ -105,7 +104,7 @@ DATABASES = {
         },
     }
 }
-
+AUTH_USER_MODEL = "permcontrol.User"
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators

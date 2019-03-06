@@ -18,4 +18,4 @@ user = get_user_model()
 
 for i in range(0,100):
     name = "dcy%s" %(i)
-    user.objects.create(username=name,email=name+"@esunny.cc",password=name+"123456")
+    user.objects.create_user(username=name,email=name+"@esunny.cc",password=name+"123456")
