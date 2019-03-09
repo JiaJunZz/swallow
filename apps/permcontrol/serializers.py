@@ -4,7 +4,7 @@
 # @Author  : ZJJ
 # @Email   : 597105373@qq.com
 from rest_framework import serializers
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, Permission
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -37,9 +37,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 class GroupsSerializer(serializers.ModelSerializer):
     """
-    Groups序列化类
+    用户组序列化类
     """
-
 
     class Meta:
         model = Group
@@ -50,8 +49,16 @@ class GroupsSerializer(serializers.ModelSerializer):
             序列化
             """
         ret = super(GroupsSerializer, self).to_representation(instance)
+        perm_queryset = instance.permissions.all()
         user_queryset = instance.user_set.all()
         user_list = []
+        perm_list = []
+        for perm_obj in perm_queryset:
+            perm_list.append({
+                "id": perm_obj.id,
+                "codename": perm_obj.codename,
+            })
+        ret['perm'] = perm_list
         for user_obj in user_queryset:
             user_list.append({
                 "id": user_obj.id,
@@ -62,3 +69,13 @@ class GroupsSerializer(serializers.ModelSerializer):
             })
         ret['users'] = user_list
         return ret
+
+
+class PermissionSerializer(serializers.ModelSerializer):
+    """
+    权限序列化类
+    """
+
+    class Meta:
+        model = Permission
+        fields = "__all__"
