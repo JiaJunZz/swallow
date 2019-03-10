@@ -35,9 +35,9 @@ route.registry.extend(idc_router.registry)
 route.registry.extend(cabinetunit_router.registry)
 
 urlpatterns = [
+    re_path(r"^", include(route.urls)),
     path("admin/", admin.site.urls),
     path("docs", include_docs_urls("swallow运维平台API接口文档")),
     re_path(r"^api_auth",include("rest_framework.urls")),
-    re_path(r"^", include(route.urls)),
     re_path(r'^api-token-auth/', views.obtain_auth_token)
 ]

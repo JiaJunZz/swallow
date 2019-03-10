@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import viewsets, mixins, status
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions
+from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions,DjangoObjectPermissions
 from .serializers import UserSerializer, GroupsSerializer, PermissionSerializer
 from .filter import UsersFilter, GroupsFilter
 
@@ -29,7 +29,7 @@ class UserViewset(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('id')
     serializer_class = UserSerializer
     # authentication_classes = (SessionAuthentication,)
-    permission_classes = (DjangoModelPermissions,)
+    # permission_classes = (DjangoModelPermissions,)
     filter_class = UsersFilter
     filter_fields = ("username", "email")
 
@@ -38,7 +38,7 @@ class UserGroupViewset(viewsets.GenericViewSet,
                        mixins.UpdateModelMixin):
     """
     update:
-        更新用户信息
+        更新用户的用户组信息
     """
 
     queryset = User.objects.all().order_by('id')
