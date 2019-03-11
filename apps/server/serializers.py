@@ -6,7 +6,8 @@
 from rest_framework import serializers
 from .models import Server, Nic, ServerIp
 from manufactory.models import Manufactory, ProductModel
-
+from supplier.models import Supplier
+from idc.models import Idc
 
 class ServerAutoSerializer(serializers.Serializer):
     """
@@ -28,6 +29,7 @@ class ServerAutoSerializer(serializers.Serializer):
     productmodel = serializers.CharField(max_length=32, label="设备型号", help_text="设备型号")
     manufactory = serializers.CharField(max_length=64, label="制造商", help_text="制造商")
     net = serializers.JSONField(required=True, write_only=True)
+
 
     def validate_manufactory(self, value):
         try:
@@ -57,7 +59,7 @@ class ServerAutoSerializer(serializers.Serializer):
         self.check_nic(server_obj, net)
         return server_obj
 
-    def update_server(self, instance, validated_data):
+    def update(self, instance, validated_data):
         instance.hostname = validated_data.get("hostname", instance.hostname)
         instance.os_type = validated_data.get("os_type", instance.os_type)
         instance.os_release = validated_data.get("os_release", instance.os_release)
@@ -67,15 +69,18 @@ class ServerAutoSerializer(serializers.Serializer):
         instance.cpu_logic_count = validated_data.get("cpu_logic_count", instance.cpu_logic_count)
         instance.mem_capacity = validated_data.get("mem_capacity", instance.mem_capacity)
         instance.disk_capacity = validated_data.get("disk_capacity", instance.disk_capacity)
+        instance.manufactory = validated_data.get("manufactory", instance.manufactory)
+        instance.productmodel = validated_data.get("productmodel", instance.productmodel)
+        validated_net = validated_data.get("net",[])
+        self.check_nic(instance, validated_net)
         instance.save()
-        self.check_nic(instance, validated_data["net"])
         return instance
 
     def create(self, validated_data):
         uuid = validated_data["uuid"].lower()
         try:
             server_obj = Server.objects.get(uuid__icontains=uuid)
-            return self.update_server(server_obj, validated_data)
+            return self.update(server_obj, validated_data)
         except Server.DoesNotExist:
             return self.create_server(validated_data)
 
@@ -83,11 +88,11 @@ class ServerAutoSerializer(serializers.Serializer):
         """
         判断服务器中是否有网卡设备
         """
-        serverip_queryset = server_obj.nic_set.all()  # 获取该服务器对象的所有网卡
+        nic_queryset = server_obj.net.all()  # 获取该服务器对象的所有网卡,related_name值是net
         post_nic_queryset = []
         for n in net:
             try:
-                nic_obj = serverip_queryset.get(nic_name__exact=n['nic_name'])
+                nic_obj = nic_queryset.get(nic_name__exact=n['nic_name'])
                 Nic.objects.filter(nic_name__exact=n['nic_name']).update(mac_address=n["mac_address"])  # 强制更新mac地址
                 self.check_serverip(nic_obj, n["ip_addrs"])
             except Nic.DoesNotExist:
@@ -95,7 +100,7 @@ class ServerAutoSerializer(serializers.Serializer):
                 nic_obj = self.create_nic(n, server_obj)
                 self.check_serverip(nic_obj, ip_info)
             post_nic_queryset.append(nic_obj)
-        for nic_obj in set(serverip_queryset) - set(post_nic_queryset):  # 比对删除post之前的网卡信息
+        for nic_obj in set(nic_queryset) - set(post_nic_queryset):  # 比对删除post之前的网卡信息
             nic_obj.delete()
 
     @staticmethod
@@ -147,6 +152,36 @@ class ServerSerializer(serializers.ModelSerializer):
     net = NicSerializer(many=True, read_only=True)
     create_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S",label="创建时间", help_text="创建时间",required=False, read_only=True)
     update_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S",label="更新时间", help_text="更新时间",required=False, read_only=True)
+
+    def validate_supplier(self, value):
+        try:
+            return Supplier.objects.get(supplier_name__exact=value)
+        except Supplier.DoesNotExist:
+            return self.create_supplier(value)
+
+    def validate_idc(self, value):
+        try:
+            return Idc.objects.get(idc__exact=value)
+        except Idc.DoesNotExist:
+            return self.create_idc(value)
+
+    @staticmethod
+    def create_supplier(supplier_name):
+        return Supplier.objects.create(supplier_name=supplier_name)
+
+    @staticmethod
+    def create_idc(idc_name):
+        return Idc.objects.create(idc_name=idc_name)
+
+
+    def update(self, instance, validated_data):
+        instance.remark = validated_data.get("remark", instance.remark)
+        instance.supplier = validated_data.get("supplier", instance.supplier)
+        instance.idc = validated_data.get("idc", instance.idc)
+
+        instance.save()
+        return instance
+
 
     class Meta:
         model = Server

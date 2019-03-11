@@ -2,7 +2,7 @@ from django.db import models
 from manufactory.models import Manufactory, ProductModel
 from supplier.models import Supplier
 from idc.models import Idc,Cabinet
-
+from cabinetunit.models import CabinetUnit
 
 # Create your models here.
 class Server(models.Model):
@@ -31,6 +31,7 @@ class Server(models.Model):
                             help_text="所属IDC机房")
     cabinet = models.ForeignKey(Cabinet, on_delete=models.DO_NOTHING, verbose_name="所属机柜", max_length=16, null=True,
                             help_text="所属机柜")
+    cabinet_unit = models.ManyToManyField(CabinetUnit, verbose_name="机柜U位", blank=True)
     remark = models.TextField("备注", null=True, max_length=255, help_text="备注")
     trade_date = models.DateField("购买日期", null=True, max_length=32, help_text="购买日期")
     expire_date = models.DateField("过保日期", null=True, max_length=32, help_text="过保日期")
