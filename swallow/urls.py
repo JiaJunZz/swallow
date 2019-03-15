@@ -23,7 +23,6 @@ from supplier.router import supplier_router
 from manufactory.router import manufactory_router
 from server.router import server_router
 from idc.router import idc_router
-from cabinetunit.router import cabinetunit_router
 
 route = DefaultRouter()
 
@@ -32,7 +31,6 @@ route.registry.extend(supplier_router.registry)
 route.registry.extend(manufactory_router.registry)
 route.registry.extend(server_router.registry)
 route.registry.extend(idc_router.registry)
-route.registry.extend(cabinetunit_router.registry)
 
 urlpatterns = [
     re_path(r"^", include(route.urls)),

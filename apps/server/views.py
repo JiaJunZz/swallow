@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from .models import Server, Nic, ServerIp
-from .serializers import ServerAutoSerializer, NicSerializer,ServerIpSerializer,ServerSerializer
+from .models import Server, Nic
+from .serializers import ServerAutoSerializer, NicSerializer,ServerSerializer
 from .filter import ServerFilter
 # Create your views here.
 
@@ -51,13 +51,3 @@ class NicViewset(viewsets.ReadOnlyModelViewSet):
     """
     queryset = Nic.objects.all()
     serializer_class = NicSerializer
-
-class ServerIpViewset(viewsets.ReadOnlyModelViewSet):
-    """
-    retrieve:
-        返回Ip地址信息
-    list:
-        返回Ip地址列表
-    """
-    queryset = ServerIp.objects.all()
-    serializer_class = ServerIpSerializer

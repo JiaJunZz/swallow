@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     'manufactory',
     'supplier',
     'server',
-    'cabinetunit',
     'permcontrol'
 ]
 

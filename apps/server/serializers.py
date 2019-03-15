@@ -4,16 +4,16 @@
 # @Author  : ZJJ
 # @Email   : 597105373@qq.com
 from rest_framework import serializers
-from .models import Server, Nic, ServerIp
+from .models import Server, Nic
 from manufactory.models import Manufactory, ProductModel
-from supplier.models import Supplier
-from idc.models import Idc
+from idc.models import Uposition
+
 
 class ServerAutoSerializer(serializers.Serializer):
     """
     服务器自动采集序列化类
     """
-
+    id = serializers.IntegerField(read_only=True)
     ip_managemant = serializers.IPAddressField(max_length=15, label="管理IP", help_text="管理IP")
     hostname = serializers.CharField(max_length=24, label="主机名", help_text="主机名")
     os_type = serializers.CharField(max_length=16, label="系统类型", help_text="系统类型")
@@ -23,13 +23,39 @@ class ServerAutoSerializer(serializers.Serializer):
     cpu_core_count = serializers.IntegerField(label="CPU核数", help_text="CPU核数")
     cpu_logic_count = serializers.IntegerField(label="逻辑CPU个数", help_text="逻辑CPU个数")
     mem_capacity = serializers.DecimalField(max_digits=10, decimal_places=2, label="内存大小(GB)", help_text="内存大小(GB)")
-    disk_capacity = serializers.DecimalField(max_digits=10, decimal_places=2, label="磁盘容量(GB)", help_text="磁盘容量(GB)")
+    disk_capacity = serializers.DecimalField(max_digits=10, decimal_places=2, label="硬盘容量(GB)", help_text="硬盘容量(GB)")
     sn = serializers.CharField(max_length=128, label="序列号", help_text="序列号")
     uuid = serializers.CharField(max_length=128, label="UUID", help_text="UUID")
     productmodel = serializers.CharField(max_length=32, label="设备型号", help_text="设备型号")
-    manufactory = serializers.CharField(max_length=64, label="制造商", help_text="制造商")
-    net = serializers.JSONField(required=True, write_only=True)
+    manufactory = serializers.CharField(max_length=64, label="品牌", help_text="品牌")
+    nic = serializers.JSONField(required=True, write_only=True)
 
+    def check_nic(self, server_obj, nic_list):
+        """
+        判断服务器中是否有网卡设备
+        """
+        nic_queryset = server_obj.nic_set.all()  # 获取该服务器对象的所有网卡
+        post_nic_queryset = []
+        for n in nic_list:
+            try:
+                nic_obj = nic_queryset.get(nic_name__exact=n['nic_name'])
+                # 强制更新
+                Nic.objects.filter(nic_name__exact=n['nic_name']).update(mac_address=n["mac_address"],
+                                                                         ip_addr=n["ip_addr"], netmask=n["netmask"])
+            except Nic.DoesNotExist:
+                nic_obj = self.create_nic(n, server_obj)
+            post_nic_queryset.append(nic_obj)
+        for nic_obj in set(nic_queryset) - set(post_nic_queryset):  # 比对删除post之前的网卡信息
+            nic_obj.delete()
+
+    @staticmethod
+    def create_nic(n, server_obj):
+        """
+        创建网卡设备
+        """
+        n["server"] = server_obj
+        nic_obj = Nic.objects.create(**n)
+        return nic_obj
 
     def validate_manufactory(self, value):
         try:
@@ -54,9 +80,9 @@ class ServerAutoSerializer(serializers.Serializer):
         return ProductModel.objects.create(product_name=product_name, manufactory=manufactory)
 
     def create_server(self, validated_data):
-        net = validated_data.pop("net")
+        nic_list = validated_data.pop("nic")
         server_obj = Server.objects.create(**validated_data)
-        self.check_nic(server_obj, net)
+        self.check_nic(server_obj, nic_list)
         return server_obj
 
     def update(self, instance, validated_data):
@@ -71,8 +97,8 @@ class ServerAutoSerializer(serializers.Serializer):
         instance.disk_capacity = validated_data.get("disk_capacity", instance.disk_capacity)
         instance.manufactory = validated_data.get("manufactory", instance.manufactory)
         instance.productmodel = validated_data.get("productmodel", instance.productmodel)
-        validated_net = validated_data.get("net",[])
-        self.check_nic(instance, validated_net)
+        validated_nic = validated_data.get("nic", [])
+        self.check_nic(instance, validated_nic)
         instance.save()
         return instance
 
@@ -83,56 +109,6 @@ class ServerAutoSerializer(serializers.Serializer):
             return self.update(server_obj, validated_data)
         except Server.DoesNotExist:
             return self.create_server(validated_data)
-
-    def check_nic(self, server_obj, net):
-        """
-        判断服务器中是否有网卡设备
-        """
-        nic_queryset = server_obj.net.all()  # 获取该服务器对象的所有网卡,related_name值是net
-        post_nic_queryset = []
-        for n in net:
-            try:
-                nic_obj = nic_queryset.get(nic_name__exact=n['nic_name'])
-                Nic.objects.filter(nic_name__exact=n['nic_name']).update(mac_address=n["mac_address"])  # 强制更新mac地址
-                self.check_serverip(nic_obj, n["ip_addrs"])
-            except Nic.DoesNotExist:
-                ip_info = n.pop("ip_addrs")
-                nic_obj = self.create_nic(n, server_obj)
-                self.check_serverip(nic_obj, ip_info)
-            post_nic_queryset.append(nic_obj)
-        for nic_obj in set(nic_queryset) - set(post_nic_queryset):  # 比对删除post之前的网卡信息
-            nic_obj.delete()
-
-    @staticmethod
-    def create_nic(n, server_obj):
-        """
-        创建网卡设备
-        """
-        n["server"] = server_obj
-        nic_obj = Nic.objects.create(**n)
-        return nic_obj
-
-    def check_serverip(self, nic_obj, ip_info):
-        """
-        判断服务器是否存在这个IP
-        """
-        serverip_queryset = nic_obj.serverip_set.all()  # 获取改网卡的所有IP
-        post_serverip_queryset = []
-        for ip in ip_info:
-            try:
-                serverip_obj = serverip_queryset.get(ip_addr__exact=ip['ip_addr'])
-                ServerIp.objects.filter(ip_addr__exact=ip['ip_addr']).update(netmask=ip["netmask"])
-            except ServerIp.DoesNotExist:
-                serverip_obj = self.create_serverip(nic_obj, ip)
-            post_serverip_queryset.append(serverip_obj)
-        for serverip_obj in set(serverip_queryset) - set(post_serverip_queryset):
-            serverip_obj.delete()
-
-    @staticmethod
-    def create_serverip(nic_obj, ip):
-        ip["nic"] = nic_obj
-        serverip_obj = ServerIp.objects.create(**ip)
-        return serverip_obj
 
 
 class NicSerializer(serializers.ModelSerializer):
@@ -149,50 +125,88 @@ class ServerSerializer(serializers.ModelSerializer):
     """
     服务器序列化类
     """
-    net = NicSerializer(many=True, read_only=True)
-    create_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S",label="创建时间", help_text="创建时间",required=False, read_only=True)
-    update_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S",label="更新时间", help_text="更新时间",required=False, read_only=True)
 
-    def validate_supplier(self, value):
-        try:
-            return Supplier.objects.get(supplier_name__exact=value)
-        except Supplier.DoesNotExist:
-            return self.create_supplier(value)
-
-    def validate_idc(self, value):
-        try:
-            return Idc.objects.get(idc__exact=value)
-        except Idc.DoesNotExist:
-            return self.create_idc(value)
-
-    @staticmethod
-    def create_supplier(supplier_name):
-        return Supplier.objects.create(supplier_name=supplier_name)
-
-    @staticmethod
-    def create_idc(idc_name):
-        return Idc.objects.create(idc_name=idc_name)
-
-
-    def update(self, instance, validated_data):
-        instance.remark = validated_data.get("remark", instance.remark)
-        instance.supplier = validated_data.get("supplier", instance.supplier)
-        instance.idc = validated_data.get("idc", instance.idc)
-
-        instance.save()
-        return instance
-
+    uposition = serializers.JSONField(write_only=True)
+    create_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", label="创建时间", help_text="创建时间", required=False,
+                                            read_only=True)
+    update_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", label="更新时间", help_text="更新时间", required=False,
+                                            read_only=True)
 
     class Meta:
         model = Server
-        fields = "__all__"
+        fields = ['ip_managemant', 'hostname', 'os_type', 'os_release', 'cpu_model', 'cpu_physics_count',
+                  'cpu_core_count', 'cpu_logic_count', 'mem_capacity', 'disk_capacity', 'sn', 'uuid', 'productmodel',
+                  'manufactory', 'supplier', 'remark', 'trade_date', 'expire_date', 'create_date', 'update_date',
+                  'uposition']
 
+    @staticmethod
+    def relate_uposition(server_obj, uposition_data):
+        """
+        更新关联U位
+        """
+        u_list = []
+        for u in uposition_data:
+            u_obj = Uposition.objects.get(id=u['u_id'])
+            u_list.append(u_obj)
+        server_obj.u_server.set(u_list)
 
-class ServerIpSerializer(serializers.ModelSerializer):
-    """
-    IP地址序列化类
-    """
+    def create(self, validated_data):
+        uposition_data = validated_data.pop('uposition')
+        server_obj = Server.objects.create(**validated_data)
+        self.relate_uposition(server_obj, uposition_data)
+        return server_obj
 
-    class Meta:
-        model = ServerIp
-        fields = "__all__"
+    def update(self, instance, validated_data):
+        instance.remark = validated_data.get("remark", instance.remark)
+        instance.trade_date = validated_data.get("trade_date", instance.trade_date)
+        instance.expire_date = validated_data.get("expire_date", instance.expire_date)
+        instance.supplier = validated_data.get("supplier", instance.supplier)
+        uposition_data = validated_data.get("uposition", [])
+        self.relate_uposition(instance, uposition_data)
+        instance.save()
+        return instance
+
+    def to_representation(self, instance):
+        supplier_obj = instance.supplier
+        manufactory_obj = instance.manufactory
+        productmodel_obj = instance.productmodel
+        nic_queryset = instance.nic_set.all()
+        cabinet_unit_queryset = instance.u_server.all()
+        ret = super(ServerSerializer, self).to_representation(instance)
+        nic_list = []
+        u_list = []
+
+        for nic_obj in nic_queryset:
+            nic_list.append({
+                "nic_id": nic_obj.id,
+                "nic_name": nic_obj.nic_name,
+                "mac_address": nic_obj.mac_address,
+                "ip_addr": nic_obj.ip_addr,
+                "netmask": nic_obj.netmask,
+            })
+        ret["nic"] = nic_list
+        if supplier_obj:
+            ret["supplier"] = {
+                "supplier_id": supplier_obj.id,
+                "supplier_name": supplier_obj.supplier_name,
+            }
+        if manufactory_obj:
+            ret["manufactory"] = {
+                "manufactory_id": manufactory_obj.id,
+                "manufactory_name": manufactory_obj.manufactory_name,
+            }
+        if productmodel_obj:
+            ret["productmodel"] = {
+                "productmodel_id": productmodel_obj.id,
+                "productmodel_name": productmodel_obj.product_name,
+            }
+
+        for u_obj in cabinet_unit_queryset:
+            u_list.append({
+                "u_id": u_obj.id,
+                "u_name": u_obj.u_name,
+                "cabinet": u_obj.cabinet.cabinet_name,
+                "idc": u_obj.cabinet.idc.idc_name
+            })
+        ret["uposition"] = u_list
+        return ret
