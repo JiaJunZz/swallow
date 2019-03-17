@@ -6,7 +6,7 @@
 from rest_framework import serializers
 from .models import Server, Nic
 from manufactory.models import Manufactory, ProductModel
-from idc.models import Uposition
+from uposition.models import Uposition
 
 
 class ServerAutoSerializer(serializers.Serializer):
@@ -126,7 +126,9 @@ class ServerSerializer(serializers.ModelSerializer):
     服务器序列化类
     """
 
-    uposition = serializers.JSONField(write_only=True)
+    uposition = serializers.JSONField(write_only=True,required=False,label="U位",help_text="U位")
+    approach_date = serializers.DateField(required=False, label="进场日期",help_text="进场日期")
+    expire_date = serializers.DateField(  required=False,label="过保日期",help_text="过保日期")
     create_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", label="创建时间", help_text="创建时间", required=False,
                                             read_only=True)
     update_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", label="更新时间", help_text="更新时间", required=False,
@@ -134,10 +136,14 @@ class ServerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Server
-        fields = ['ip_managemant', 'hostname', 'os_type', 'os_release', 'cpu_model', 'cpu_physics_count',
+        fields = ['id','ip_managemant', 'hostname', 'os_type', 'os_release', 'cpu_model', 'cpu_physics_count',
                   'cpu_core_count', 'cpu_logic_count', 'mem_capacity', 'disk_capacity', 'sn', 'uuid', 'productmodel',
-                  'manufactory', 'supplier', 'remark', 'trade_date', 'expire_date', 'create_date', 'update_date',
+                  'manufactory', 'supplier', 'remark', 'approach_date', 'expire_date', 'create_date', 'update_date','idc','cabinet',
                   'uposition']
+
+    def validate(self, attrs):
+        print(attrs)
+        return attrs
 
     @staticmethod
     def relate_uposition(server_obj, uposition_data):
@@ -146,30 +152,42 @@ class ServerSerializer(serializers.ModelSerializer):
         """
         u_list = []
         for u in uposition_data:
-            u_obj = Uposition.objects.get(id=u['u_id'])
+            u_obj = Uposition.objects.get(id=u)
             u_list.append(u_obj)
         server_obj.u_server.set(u_list)
 
     def create(self, validated_data):
-        uposition_data = validated_data.pop('uposition')
-        server_obj = Server.objects.create(**validated_data)
-        self.relate_uposition(server_obj, uposition_data)
+        print(validated_data)
+        try:
+            uposition_data = validated_data.pop('uposition')
+            # cabinet_id = validated_data.pop()
+            server_obj = Server.objects.create(**validated_data)
+            self.relate_uposition(server_obj, uposition_data)
+        except:
+            server_obj = Server.objects.create(**validated_data)
         return server_obj
 
     def update(self, instance, validated_data):
         instance.remark = validated_data.get("remark", instance.remark)
-        instance.trade_date = validated_data.get("trade_date", instance.trade_date)
+        instance.approach_date = validated_data.get("approach_date", instance.approach_date)
         instance.expire_date = validated_data.get("expire_date", instance.expire_date)
         instance.supplier = validated_data.get("supplier", instance.supplier)
-        uposition_data = validated_data.get("uposition", [])
-        self.relate_uposition(instance, uposition_data)
-        instance.save()
+        instance.idc = validated_data.get("idc", instance.idc)
+        instance.cabinet = validated_data.get("cabinet", instance.cabinet)
+        try:
+            uposition_data = validated_data.get("uposition", [])
+            self.relate_uposition(instance, uposition_data)
+            instance.save()
+        except:
+            instance.save()
         return instance
 
     def to_representation(self, instance):
         supplier_obj = instance.supplier
         manufactory_obj = instance.manufactory
         productmodel_obj = instance.productmodel
+        idc_obj = instance.idc
+        cabinet_obj = instance.cabinet
         nic_queryset = instance.nic_set.all()
         cabinet_unit_queryset = instance.u_server.all()
         ret = super(ServerSerializer, self).to_representation(instance)
@@ -190,6 +208,16 @@ class ServerSerializer(serializers.ModelSerializer):
                 "supplier_id": supplier_obj.id,
                 "supplier_name": supplier_obj.supplier_name,
             }
+        if idc_obj:
+            ret["idc"] = {
+                "idc_id": idc_obj.id,
+                "idc_name": idc_obj.name,
+            }
+        if cabinet_obj:
+            ret["cabinet"] = {
+                "cabinet_id": cabinet_obj.id,
+                "cabinet_name": cabinet_obj.name,
+            }
         if manufactory_obj:
             ret["manufactory"] = {
                 "manufactory_id": manufactory_obj.id,
@@ -204,9 +232,7 @@ class ServerSerializer(serializers.ModelSerializer):
         for u_obj in cabinet_unit_queryset:
             u_list.append({
                 "u_id": u_obj.id,
-                "u_name": u_obj.u_name,
-                "cabinet": u_obj.cabinet.cabinet_name,
-                "idc": u_obj.cabinet.idc.idc_name
+                "name": u_obj.name
             })
         ret["uposition"] = u_list
         return ret

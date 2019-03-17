@@ -5,6 +5,7 @@ from .serializers import SupplierSerializer
 from rest_framework.response import Response
 from core.pagination import StandardResultsSetPagination
 
+
 # Create your views here.
 class SupplierViewset(viewsets.ModelViewSet):
     """
@@ -27,12 +28,12 @@ class SupplierViewset(viewsets.ModelViewSet):
         return Supplier.objects.all()
 
     def list(self, request, *args, **kwargs):
+        # 当传回status参数为1时，不分页
 
-        status = request.query_params.get("status")
+        nopage = request.query_params.get("nopage")
         supplier = self.get_queryset()
-        if status == '1':
+        if nopage == '1':
             self.paginator.page_size = supplier.count()
-
         page = self.paginate_queryset(supplier)
         serializer = self.get_serializer(page, many=True)
         return self.get_paginated_response(serializer.data)

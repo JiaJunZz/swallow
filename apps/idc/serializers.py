@@ -6,35 +6,35 @@
 
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
-from .models import Idc, Cabinet, Uposition
+from .models import Idc, Cabinet
 
 
-class UpositionSerializer(serializers.ModelSerializer):
-    """
-     U位序列化类
-    """
-
-    class Meta:
-        model = Uposition
-        fields = ['id', 'u_name', 'cabinet', 'server']
-        validators = [
-            UniqueTogetherValidator(
-                queryset=Uposition.objects.all(),
-                fields=('u_name', 'cabinet'),
-                message='此U位已经存在'
-            )
-        ]
-
-
-class UpositionNoCabinetSerializer(serializers.ModelSerializer):
-    """
-    U位序列化类
-    无cabinet
-    """
-
-    class Meta:
-        model = Uposition
-        fields = ['id', 'u_name']
+# class UpositionSerializer(serializers.ModelSerializer):
+#     """
+#      U位序列化类
+#     """
+#
+#     class Meta:
+#         model = Uposition
+#         fields = ['id', 'name', 'cabinet', 'server']
+#         validators = [
+#             UniqueTogetherValidator(
+#                 queryset=Uposition.objects.all(),
+#                 fields=('name', 'cabinet'),
+#                 message='此U位已经存在'
+#             )
+#         ]
+#
+#
+# class UpositionNoCabinetSerializer(serializers.ModelSerializer):
+#     """
+#     U位序列化类
+#     无cabinet
+#     """
+#
+#     class Meta:
+#         model = Uposition
+#         fields = ['id', 'name']
 
 
 class CabinetSerializer(serializers.ModelSerializer):
@@ -42,12 +42,13 @@ class CabinetSerializer(serializers.ModelSerializer):
     Cabinet序列化类
     depth
     """
-    uposition = UpositionNoCabinetSerializer(read_only=True, many=True)
+
 
     class Meta:
         model = Cabinet
-        fields = ['id', 'cabinet_name', 'uposition']
+        fields = ['id', 'name']
         depth = 2
+
 
 
 class CabinetNodepthSerializer(serializers.ModelSerializer):
@@ -58,11 +59,11 @@ class CabinetNodepthSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Cabinet
-        fields = ['id', 'cabinet_name', 'idc']
+        fields = ['id', 'name', 'idc']
         validators = [
             UniqueTogetherValidator(
                 queryset=Cabinet.objects.all(),
-                fields=('cabinet_name', 'idc'),
+                fields=('name', 'idc'),
                 message="此机柜号存在"
             )
         ]
@@ -75,7 +76,7 @@ class CabinetNodepthSerializer(serializers.ModelSerializer):
     @staticmethod
     def create_uposition(cabinet_obj):
         for i in range(1, 43):
-            cabinet_obj.uposition.create(u_name=i)
+            cabinet_obj.cab_u.create(name=i)
 
 
 class IdcSerializer(serializers.ModelSerializer):
@@ -83,7 +84,7 @@ class IdcSerializer(serializers.ModelSerializer):
     Idc序列化类
     """
 
-    cabinet = CabinetSerializer(read_only=True, many=True)
+    idc_cab = CabinetSerializer(read_only=True, many=True)
     create_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", label="创建时间", help_text="创建时间", required=False,
                                             read_only=True)
     update_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", label="更新时间", help_text="更新时间", required=False,
@@ -91,5 +92,5 @@ class IdcSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Idc
-        fields = ['id', 'idc_name', 'address', 'phone', 'remark', 'cabinet', 'create_date', 'update_date']
+        fields = ['id', 'name', 'address', 'phone', 'remark', 'idc_cab', 'create_date', 'update_date']
         depth = 2

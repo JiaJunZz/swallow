@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'manufactory',
     'supplier',
     'server',
-    'permcontrol'
+    'permcontrol',
+    'uposition'
 ]
 
 MIDDLEWARE = [

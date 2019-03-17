@@ -5,9 +5,9 @@
 # @Email   : 597105373@qq.com
 
 from rest_framework.routers import DefaultRouter
-from .views import CabinetViewset, IdcViewset, UpositionViewset
+from .views import CabinetViewset, IdcViewset
 
 idc_router = DefaultRouter()
 idc_router.register("idc", IdcViewset, base_name="idc")
 idc_router.register("cabinet", CabinetViewset, base_name="cabinet")
-idc_router.register("uposition", UpositionViewset, base_name="uposition")
+# idc_router.register("uposition", UpositionViewset, base_name="uposition")

@@ -1,6 +1,7 @@
 from django.db import models
 from manufactory.models import Manufactory, ProductModel
 from supplier.models import Supplier
+from idc.models import Cabinet,Idc
 
 
 # Create your models here.
@@ -30,8 +31,12 @@ class Server(models.Model):
     supplier = models.ForeignKey(Supplier, on_delete=models.DO_NOTHING, verbose_name="供应商", blank=True, null=True,
                                  max_length=12,
                                  help_text="供应商")
+    idc = models.ForeignKey(Idc, on_delete=models.DO_NOTHING, verbose_name="所属IDC机房", max_length=16, null=True,
+                            help_text="所属IDC机房")
+    cabinet = models.ForeignKey(Cabinet, on_delete=models.DO_NOTHING, verbose_name="所属机柜", max_length=16, null=True,
+                            help_text="所属机柜")
     remark = models.TextField("备注", blank=True, max_length=255, help_text="备注")
-    trade_date = models.DateField("购买日期", blank=True, null=True, max_length=32, help_text="购买日期")
+    approach_date = models.DateField("进场日期", blank=True, null=True, max_length=32, help_text="进场日期")
     expire_date = models.DateField("过保日期", blank=True, null=True, max_length=32, help_text="过保日期")
     create_date = models.DateTimeField("创建时间", blank=True, null=True, auto_now_add=True, max_length=32,
                                        help_text="创建时间")
