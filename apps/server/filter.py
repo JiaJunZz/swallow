@@ -10,7 +10,7 @@ from .models import Server
 
 
 class ServerFilter(filters.FilterSet):
-    host_ip_sn = filters.CharFilter(method="my_custom_filter")
+    keywords = filters.CharFilter(method="my_custom_filter")
 
     def my_custom_filter(self, queryset, name, value):
         # 对hostname,ip,sn进行模糊搜索
@@ -19,4 +19,4 @@ class ServerFilter(filters.FilterSet):
 
     class Meta:
         model = Server
-        fields = ['host_ip_sn', 'manufactory','supplier']
+        fields = ['keywords']
