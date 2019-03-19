@@ -11,6 +11,9 @@ from .models import Server
 
 class ServerFilter(filters.FilterSet):
     keywords = filters.CharFilter(method="my_custom_filter")
+    supplier = filters.CharFilter(lookup_expr="exact")
+    manufactory = filters.CharFilter(lookup_expr="exact")
+    os_type = filters.CharFilter(lookup_expr="icontains")
 
     def my_custom_filter(self, queryset, name, value):
         # 对hostname,ip,sn进行模糊搜索
@@ -19,4 +22,4 @@ class ServerFilter(filters.FilterSet):
 
     class Meta:
         model = Server
-        fields = ['keywords']
+        fields = ['keywords','supplier','manufactory','os_type']

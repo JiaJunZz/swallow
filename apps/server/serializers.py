@@ -125,7 +125,8 @@ class ServerSerializer(serializers.ModelSerializer):
     """
     服务器序列化类
     """
-
+    productmodel = serializers.PrimaryKeyRelatedField(read_only=True)
+    manufactory = serializers.PrimaryKeyRelatedField(read_only=True)
     uposition = serializers.JSONField(write_only=True,required=False,label="U位",help_text="U位")
     approach_date = serializers.DateField(required=False, label="进场日期",help_text="进场日期")
     expire_date = serializers.DateField(  required=False,label="过保日期",help_text="过保日期")
@@ -141,9 +142,6 @@ class ServerSerializer(serializers.ModelSerializer):
                   'manufactory', 'supplier', 'remark', 'approach_date', 'expire_date', 'create_date', 'update_date','idc','cabinet',
                   'uposition']
 
-    def validate(self, attrs):
-        print(attrs)
-        return attrs
 
     @staticmethod
     def relate_uposition(server_obj, uposition_data):

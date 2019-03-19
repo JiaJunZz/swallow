@@ -20,8 +20,20 @@ class ManufactoryViewset(viewsets.ModelViewSet):
     create:
         创建制造商记录
     """
-    queryset = Manufactory.objects.all()
     serializer_class = ManufactorySerializer
+    def get_queryset(self):
+        return Manufactory.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        # 当传回status参数为1时，不分页
+
+        nopage = request.query_params.get("nopage")
+        supplier = self.get_queryset()
+        if nopage == '1':
+            self.paginator.page_size = supplier.count()
+        page = self.paginate_queryset(supplier)
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
 
 
 class ProductModelViewset(viewsets.ModelViewSet):
