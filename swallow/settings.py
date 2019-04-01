@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 import sys
+from celery.schedules import crontab
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -158,4 +159,59 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'apps.core.permissions.CustomPermissions',
     ),
+}
+
+# celery settting
+# celery中间件 redis://redis服务所在的ip地址:端口/数据库号
+BROKER_URL = 'redis://192.168.123.173:6381'
+
+# celery结果返回，可用于跟踪结果
+CELERY_RESULT_BACKEND = 'redis://192.168.123.173:6381'
+
+CELERY_QUEUES = {
+    'beat_autoServer': {
+        'exchange': 'beat_autoServer',
+        'exchange_type': 'direct',
+        'binding_key': 'beat_autoServer'
+    },
+    'work_queue': {
+        'exchange': 'work_queue',
+        'exchange_type': 'direct',
+        'binding_key': 'work_queue'
+    }
+}
+CELERY_DEFAULT_QUEUE = 'work_queue'
+
+# celery内容等消息的格式设置
+CELERY_ACCEPT_CONTENT = ['application/json', ]
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+# celery时区设置
+CELERY_TIMEZONE = 'Asia/Shanghai'
+
+#有些情况可以防止死锁
+CELERY_FORCE_EXECV = True
+
+#允许重试
+CELERY_ACKS_LATE = True
+
+#每个worker最多执行100个任务后被销毁，防止内存泄露
+CELERY_MAX_TASKS_PER_CHILD = 100
+
+# 单个任务的最大运行时间
+CELERY_TASK_TIME_LIMIT = 12 * 30
+
+#设置并发的worker数量
+# CELERY_CONCURRENCY = 4
+
+CELERYBEAT_SCHEDULE = {
+    'autoServer': {
+        'task': 'auto_server',
+        'schedule': crontab(minute='*/1'),
+        'args': (),
+        'options': {
+            'queue': 'beat_autoServer'
+        }
+    }
 }
