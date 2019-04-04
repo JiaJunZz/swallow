@@ -215,3 +215,17 @@ CELERYBEAT_SCHEDULE = {
         }
     }
 }
+
+# requests setting
+REQUEST_USERNAME = 'admin'
+
+REQUEST_PASSWORD = 'admin123456'
+
+REQUEST_TOKEN_URL = 'http://192.168.123.173:8000/api-token-auth/'
+
+REQUEST_AUTOSERVER_URL = 'http://192.168.123.173:8000/serverauto/'
+
+# Ansible Inventory
+ANSIBLE_HOSTS_FILE = '/etc/ansible/hosts'
+
+ANSIBLE_GROUP = "all"

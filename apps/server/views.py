@@ -1,8 +1,6 @@
 from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework import status
-from .models import Server, Nic
-from .serializers import ServerAutoSerializer, NicSerializer, ServerSerializer
+from .models import Server, Nic, Driver
+from .serializers import ServerAutoSerializer, NicSerializer, ServerSerializer, DriverSerializer
 from .filter import ServerFilter
 
 
@@ -55,3 +53,13 @@ class NicViewset(viewsets.ReadOnlyModelViewSet):
     """
     queryset = Nic.objects.all()
     serializer_class = NicSerializer
+
+class DriverViewset(viewsets.ReadOnlyModelViewSet):
+    """
+    retrieve:
+        返回硬盘信息
+    list:
+        返回硬盘列表
+    """
+    queryset = Driver.objects.all()
+    serializer_class = DriverSerializer

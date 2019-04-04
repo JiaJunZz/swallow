@@ -4,7 +4,7 @@
 # @Author  : ZJJ
 # @Email   : 597105373@qq.com
 from rest_framework import serializers
-from .models import Server, Nic
+from .models import Server, Nic,Driver
 from manufactory.models import Manufactory, ProductModel
 from uposition.models import Uposition
 
@@ -23,12 +23,13 @@ class ServerAutoSerializer(serializers.Serializer):
     cpu_core_count = serializers.IntegerField(label="CPU核数", help_text="CPU核数")
     cpu_logic_count = serializers.IntegerField(label="逻辑CPU个数", help_text="逻辑CPU个数")
     mem_capacity = serializers.DecimalField(max_digits=10, decimal_places=2, label="内存大小(GB)", help_text="内存大小(GB)")
-    disk_capacity = serializers.DecimalField(max_digits=10, decimal_places=2, label="硬盘容量(GB)", help_text="硬盘容量(GB)")
     sn = serializers.CharField(max_length=128, label="序列号", help_text="序列号")
     uuid = serializers.CharField(max_length=128, label="UUID", help_text="UUID")
     productmodel = serializers.CharField(max_length=32, label="设备型号", help_text="设备型号")
     manufactory = serializers.CharField(max_length=64, label="品牌", help_text="品牌")
     nic = serializers.JSONField(required=True, write_only=True)
+    driver = serializers.JSONField(required=True, write_only=True)
+
 
     def check_nic(self, server_obj, nic_list):
         """
@@ -48,6 +49,23 @@ class ServerAutoSerializer(serializers.Serializer):
         for nic_obj in set(nic_queryset) - set(post_nic_queryset):  # 比对删除post之前的网卡信息
             nic_obj.delete()
 
+    def check_driver(self, server_obj, driver_list):
+        """
+        判断服务器中是否有硬盘
+        """
+        driver_queryset = server_obj.driver_set.all()  # 获取该服务器对象的所有网卡
+        post_driver_queryset = []
+        for d in driver_list:
+            try:
+                driver_obj = driver_queryset.get(driver_name__exact=d['driver_name'])
+                # 强制更新
+                Driver.objects.filter(driver_name__exact=d['driver_name']).update(capacity=d["capacity"])
+            except Driver.DoesNotExist:
+                driver_obj = self.create_driver(d, server_obj)
+            post_driver_queryset.append(driver_obj)
+        for driver_obj in set(driver_queryset) - set(post_driver_queryset):  # 比对删除post之前的网卡信息
+            driver_obj.delete()
+
     @staticmethod
     def create_nic(n, server_obj):
         """
@@ -56,6 +74,16 @@ class ServerAutoSerializer(serializers.Serializer):
         n["server"] = server_obj
         nic_obj = Nic.objects.create(**n)
         return nic_obj
+
+    @staticmethod
+    def create_driver(d, server_obj):
+        """
+        创建硬盘设备
+        """
+        d["server"] = server_obj
+        print(d)
+        Driver_obj = Driver.objects.create(**d)
+        return Driver_obj
 
     def validate_manufactory(self, value):
         try:
@@ -81,11 +109,14 @@ class ServerAutoSerializer(serializers.Serializer):
 
     def create_server(self, validated_data):
         nic_list = validated_data.pop("nic")
+        driver_list = validated_data.pop("driver")
         server_obj = Server.objects.create(**validated_data)
         self.check_nic(server_obj, nic_list)
+        self.check_driver(server_obj,driver_list)
         return server_obj
 
     def update(self, instance, validated_data):
+        instance.ip_managemant = validated_data.get("ip_managemant", instance.ip_managemant)
         instance.hostname = validated_data.get("hostname", instance.hostname)
         instance.os_type = validated_data.get("os_type", instance.os_type)
         instance.os_release = validated_data.get("os_release", instance.os_release)
@@ -94,11 +125,12 @@ class ServerAutoSerializer(serializers.Serializer):
         instance.cpu_core_count = validated_data.get("cpu_core_count", instance.cpu_core_count)
         instance.cpu_logic_count = validated_data.get("cpu_logic_count", instance.cpu_logic_count)
         instance.mem_capacity = validated_data.get("mem_capacity", instance.mem_capacity)
-        instance.disk_capacity = validated_data.get("disk_capacity", instance.disk_capacity)
         instance.manufactory = validated_data.get("manufactory", instance.manufactory)
         instance.productmodel = validated_data.get("productmodel", instance.productmodel)
         validated_nic = validated_data.get("nic", [])
         self.check_nic(instance, validated_nic)
+        validated_driver = validated_data.get("driver", [])
+        self.check_driver(instance,validated_driver)
         instance.save()
         return instance
 
@@ -120,6 +152,15 @@ class NicSerializer(serializers.ModelSerializer):
         model = Nic
         fields = "__all__"
 
+class DriverSerializer(serializers.ModelSerializer):
+    """
+    硬盘序列化类
+    """
+
+    class Meta:
+        model = Driver
+        fields = "__all__"
+
 
 class ServerSerializer(serializers.ModelSerializer):
     """
@@ -138,7 +179,7 @@ class ServerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Server
         fields = ['id','ip_managemant', 'hostname', 'os_type', 'os_release', 'cpu_model', 'cpu_physics_count',
-                  'cpu_core_count', 'cpu_logic_count', 'mem_capacity', 'disk_capacity', 'sn', 'uuid', 'productmodel',
+                  'cpu_core_count', 'cpu_logic_count', 'mem_capacity', 'sn', 'uuid', 'productmodel',
                   'manufactory', 'supplier', 'remark', 'approach_date', 'expire_date', 'create_date', 'update_date','idc','cabinet',
                   'uposition']
 
@@ -187,10 +228,12 @@ class ServerSerializer(serializers.ModelSerializer):
         idc_obj = instance.idc
         cabinet_obj = instance.cabinet
         nic_queryset = instance.nic_set.all()
+        driver_queryset = instance.driver_set.all()
         cabinet_unit_queryset = instance.u_server.all()
         ret = super(ServerSerializer, self).to_representation(instance)
         nic_list = []
         u_list = []
+        dirver_list = []
 
         for nic_obj in nic_queryset:
             nic_list.append({
@@ -201,6 +244,13 @@ class ServerSerializer(serializers.ModelSerializer):
                 "netmask": nic_obj.netmask,
             })
         ret["nic"] = nic_list
+        for driver_obj in driver_queryset:
+            dirver_list.append({
+                "driver_id": driver_obj.id,
+                "driver_name": driver_obj.driver_name,
+                "capacity": driver_obj.capacity,
+            })
+        ret["dirver"] = dirver_list
         if supplier_obj:
             ret["supplier"] = {
                 "supplier_id": supplier_obj.id,

@@ -19,13 +19,13 @@ class Server(models.Model):
     cpu_logic_count = models.SmallIntegerField("逻辑CPU个数", help_text="逻辑CPU个数", blank=True, null=True)
     mem_capacity = models.DecimalField("内存大小(GB)", max_digits=10, decimal_places=2, help_text="内存大小(GB)", blank=True,
                                        null=True)
-    disk_capacity = models.DecimalField("硬盘容量(GB)", max_digits=10, decimal_places=2, help_text="硬盘容量(GB)", blank=True,
-                                        null=True)
+    # disk_capacity = models.DecimalField("硬盘容量(GB)", max_digits=10, decimal_places=2, help_text="硬盘容量(GB)", blank=True,
+    #                                     null=True)
     sn = models.CharField("序列号", max_length=128, db_index=True, help_text="序列号", blank=True, null=True)
     uuid = models.CharField("UUID", max_length=128, db_index=True, blank=True, null=True, help_text="UUID")
     productmodel = models.ForeignKey(ProductModel, on_delete=models.DO_NOTHING, verbose_name="设备型号", null=True,
                                      blank=True,
-                                     max_length=32, help_text="设备型号")
+                                     max_length=128, help_text="设备型号")
     manufactory = models.ForeignKey(Manufactory, on_delete=models.DO_NOTHING, verbose_name="制造商", null=True, blank=True,
                                     max_length=64, help_text="制造商")
     supplier = models.ForeignKey(Supplier, on_delete=models.DO_NOTHING, verbose_name="供应商", blank=True, null=True,
@@ -57,7 +57,7 @@ class Nic(models.Model):
     """
     nic_name = models.CharField("网卡名", max_length=16, help_text="网卡名")
     mac_address = models.CharField("MAC地址", max_length=64, help_text="MAC地址")
-    ip_addr = models.GenericIPAddressField("ip地址", max_length=15, help_text="ip地址", db_index=True, unique=True)
+    ip_addr = models.GenericIPAddressField("ip地址", max_length=15, help_text="ip地址", db_index=True)
     netmask = models.CharField("子网掩码", max_length=15, help_text="子网掩码", blank=True, null=True)
     server = models.ForeignKey(Server, on_delete=models.CASCADE, verbose_name="所属服务器", help_text="所属服务器", blank=True,
                                null=True)
@@ -69,3 +69,20 @@ class Nic(models.Model):
 
     def __str__(self):
         return self.nic_name
+
+class Driver(models.Model):
+    """
+    硬盘模型
+    """
+    driver_name = models.CharField("设备名", max_length=32, help_text="设备名")
+    capacity = models.CharField("硬盘大小", max_length=32, help_text="硬盘大小",blank=True,null=True)
+    server = models.ForeignKey(Server, on_delete=models.CASCADE, verbose_name="所属服务器", help_text="所属服务器", blank=True,
+                               null=True)
+
+    class Meta:
+        verbose_name = '硬盘'
+        verbose_name_plural = verbose_name
+        ordering = ['id']
+
+    def __str__(self):
+        return self.driver_name

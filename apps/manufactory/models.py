@@ -27,7 +27,7 @@ class ProductModel(models.Model):
     """
     产品型号模型
     """
-    product_name = models.CharField("型号名称", max_length=10, help_text="型号名称")
+    product_name = models.CharField("型号名称", max_length=128, help_text="型号名称")
     manufactory = models.ForeignKey(Manufactory, verbose_name="所属制造商", on_delete=models.CASCADE, help_text="所属制造商",
                                     null=True)
 
