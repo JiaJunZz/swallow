@@ -228,4 +228,4 @@ REQUEST_AUTOSERVER_URL = 'http://192.168.123.173:8000/serverauto/'
 # Ansible Inventory
 ANSIBLE_HOSTS_FILE = '/etc/ansible/hosts'
 
-ANSIBLE_GROUP = "all"
+ANSIBLE_GROUP = "swallow_servers"
