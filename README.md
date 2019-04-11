@@ -73,6 +73,7 @@ CELERY_RESULT_BACKEND = 'redis://192.168.123.173:6381'
 
 # 管理用户
 REQUEST_USERNAME = 'admin'
+
 # 管理员用户密码
 REQUEST_PASSWORD = 'admin123456'
 
