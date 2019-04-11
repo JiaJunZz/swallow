@@ -11,8 +11,8 @@
   - [Ansible2.7](https://github.com/ansible/ansible)用于自动化获取资产信息
   - [MariaDB](https://mariadb.org/)
 ## 前端
-  - vue
-  - element-ui
+  - [vue](https://github.com/vuejs/vue)
+  - [element-ui](https://github.com/ElemeFE/element)
   - [vue-admin-template](https://github.com/PanJiaChen/vue-admin-template)模板（特别感谢大神的基础模板!!!）
 
 # 前序准备
