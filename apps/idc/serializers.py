@@ -15,12 +15,10 @@ class CabinetSerializer(serializers.ModelSerializer):
     depth
     """
 
-
     class Meta:
         model = Cabinet
         fields = ['id', 'name']
         depth = 2
-
 
 
 class CabinetNodepthSerializer(serializers.ModelSerializer):

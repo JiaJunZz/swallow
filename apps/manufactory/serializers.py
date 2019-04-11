@@ -12,6 +12,7 @@ class ManufactorySerializer(serializers.ModelSerializer):
     """
     制造商序列化类
     """
+
     class Meta:
         model = Manufactory
         fields = "__all__"
@@ -21,6 +22,7 @@ class ProductModelSerializer(serializers.ModelSerializer):
     """
     产品型号序列化类
     """
+
     class Meta:
         model = ProductModel
         fields = "__all__"

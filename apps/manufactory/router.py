@@ -5,7 +5,7 @@
 # @Email   : 597105373@qq.com
 
 from rest_framework.routers import DefaultRouter
-from .views import ManufactoryViewset,ProductModelViewset
+from .views import ManufactoryViewset, ProductModelViewset
 
 manufactory_router = DefaultRouter()
 manufactory_router.register("manufactory", ManufactoryViewset, base_name="manufactory")

@@ -4,7 +4,7 @@
 # @Author  : ZJJ
 # @Email   : 597105373@qq.com
 from rest_framework import serializers
-from .models import Server, Nic,Driver
+from .models import Server, Nic, Driver
 from manufactory.models import Manufactory, ProductModel
 from uposition.models import Uposition
 
@@ -29,7 +29,6 @@ class ServerAutoSerializer(serializers.Serializer):
     manufactory = serializers.CharField(max_length=64, label="品牌", help_text="品牌")
     nic = serializers.JSONField(required=True, write_only=True)
     driver = serializers.JSONField(required=True, write_only=True)
-
 
     def check_nic(self, server_obj, nic_list):
         """
@@ -82,8 +81,8 @@ class ServerAutoSerializer(serializers.Serializer):
         """
         d["server"] = server_obj
         print(d)
-        Driver_obj = Driver.objects.create(**d)
-        return Driver_obj
+        driver_obj = Driver.objects.create(**d)
+        return driver_obj
 
     def validate_manufactory(self, value):
         try:
@@ -112,7 +111,7 @@ class ServerAutoSerializer(serializers.Serializer):
         driver_list = validated_data.pop("driver")
         server_obj = Server.objects.create(**validated_data)
         self.check_nic(server_obj, nic_list)
-        self.check_driver(server_obj,driver_list)
+        self.check_driver(server_obj, driver_list)
         return server_obj
 
     def update(self, instance, validated_data):
@@ -130,7 +129,7 @@ class ServerAutoSerializer(serializers.Serializer):
         validated_nic = validated_data.get("nic", [])
         self.check_nic(instance, validated_nic)
         validated_driver = validated_data.get("driver", [])
-        self.check_driver(instance,validated_driver)
+        self.check_driver(instance, validated_driver)
         instance.save()
         return instance
 
@@ -152,6 +151,7 @@ class NicSerializer(serializers.ModelSerializer):
         model = Nic
         fields = "__all__"
 
+
 class DriverSerializer(serializers.ModelSerializer):
     """
     硬盘序列化类
@@ -168,9 +168,9 @@ class ServerSerializer(serializers.ModelSerializer):
     """
     productmodel = serializers.PrimaryKeyRelatedField(read_only=True)
     manufactory = serializers.PrimaryKeyRelatedField(read_only=True)
-    uposition = serializers.JSONField(write_only=True,required=False,label="U位",help_text="U位")
-    approach_date = serializers.DateField(required=False, label="进场日期",help_text="进场日期")
-    expire_date = serializers.DateField(  required=False,label="过保日期",help_text="过保日期")
+    uposition = serializers.JSONField(write_only=True, required=False, label="U位", help_text="U位")
+    approach_date = serializers.DateField(required=False, label="进场日期", help_text="进场日期")
+    expire_date = serializers.DateField(required=False, label="过保日期", help_text="过保日期")
     create_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", label="创建时间", help_text="创建时间", required=False,
                                             read_only=True)
     update_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", label="更新时间", help_text="更新时间", required=False,
@@ -178,11 +178,11 @@ class ServerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Server
-        fields = ['id','ip_managemant', 'hostname', 'os_type', 'os_release', 'cpu_model', 'cpu_physics_count',
+        fields = ['id', 'ip_managemant', 'hostname', 'os_type', 'os_release', 'cpu_model', 'cpu_physics_count',
                   'cpu_core_count', 'cpu_logic_count', 'mem_capacity', 'sn', 'uuid', 'productmodel',
-                  'manufactory', 'supplier', 'remark', 'approach_date', 'expire_date', 'create_date', 'update_date','idc','cabinet',
+                  'manufactory', 'supplier', 'remark', 'approach_date', 'expire_date', 'create_date', 'update_date',
+                  'idc', 'cabinet',
                   'uposition']
-
 
     @staticmethod
     def relate_uposition(server_obj, uposition_data):
@@ -216,9 +216,9 @@ class ServerSerializer(serializers.ModelSerializer):
         try:
             uposition_data = validated_data.get("uposition", [])
             self.relate_uposition(instance, uposition_data)
-            instance.save()
         except:
-            instance.save()
+            pass
+        instance.save()
         return instance
 
     def to_representation(self, instance):

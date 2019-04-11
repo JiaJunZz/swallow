@@ -22,4 +22,4 @@ class ServerFilter(filters.FilterSet):
 
     class Meta:
         model = Server
-        fields = ['keywords','supplier','manufactory','os_type']
+        fields = ['keywords', 'supplier', 'manufactory', 'os_type']

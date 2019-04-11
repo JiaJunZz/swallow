@@ -5,7 +5,7 @@
 # @Email   : 597105373@qq.com
 
 from rest_framework.routers import DefaultRouter
-from .views import ServerAutoViewset,ServerViewset,NicViewset,DriverViewset
+from .views import ServerAutoViewset, ServerViewset, NicViewset, DriverViewset
 
 server_router = DefaultRouter()
 server_router.register("serverauto", ServerAutoViewset, base_name="serverauto")

@@ -1,9 +1,9 @@
-from django.contrib.auth.models import Group,Permission
+from django.contrib.auth.models import Group, Permission
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets, mixins, status
 from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions,DjangoObjectPermissions
+from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions, DjangoObjectPermissions
 from .serializers import UserSerializer, GroupsSerializer, PermissionSerializer
 from .filter import UsersFilter, GroupsFilter
 
@@ -28,10 +28,8 @@ class UserViewset(viewsets.ModelViewSet):
 
     queryset = User.objects.all().order_by('id')
     serializer_class = UserSerializer
-    # authentication_classes = (SessionAuthentication,)
-    # permission_classes = (DjangoModelPermissions,)
     filter_class = UsersFilter
-    filter_fields = ("username", "email")
+    filter_fields = ("username", "email", "name")
 
 
 class UserGroupViewset(viewsets.GenericViewSet,
@@ -73,7 +71,7 @@ class GroupsViewset(viewsets.ModelViewSet):
 
 
 class GroupMemberViewset(viewsets.GenericViewSet,
-                       mixins.DestroyModelMixin):
+                         mixins.DestroyModelMixin):
     """
     destory:
         删除用户组中的成员信息
@@ -87,6 +85,7 @@ class GroupMemberViewset(viewsets.GenericViewSet,
         user_obj.groups.remove(group_obj.id)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 class PermissionViewset(viewsets.ReadOnlyModelViewSet):
     """
     retrieve:
@@ -97,6 +96,7 @@ class PermissionViewset(viewsets.ReadOnlyModelViewSet):
     queryset = Permission.objects.all().order_by('id')
     serializer_class = PermissionSerializer
     pagination_class = None
+
 
 class GroupPermViewset(viewsets.ModelViewSet):
     """

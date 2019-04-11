@@ -4,7 +4,7 @@
 # @Author  : ZJJ
 # @Email   : 597105373@qq.com
 
-from .views import UserViewset,GroupsViewset,UserGroupViewset,GroupMemberViewset,PermissionViewset,GroupPermViewset
+from .views import UserViewset, GroupsViewset, UserGroupViewset, GroupMemberViewset, PermissionViewset, GroupPermViewset
 from rest_framework.routers import DefaultRouter
 
 permcontrol_router = DefaultRouter()

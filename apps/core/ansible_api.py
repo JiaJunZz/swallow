@@ -10,10 +10,7 @@ from ansible.vars.manager import VariableManager
 from ansible.inventory.manager import InventoryManager
 from ansible.playbook.play import Play
 from ansible.executor.task_queue_manager import TaskQueueManager
-
-from ansible.executor.playbook_executor import PlaybookExecutor
 from ansible.plugins.callback import CallbackBase
-
 
 
 class ResultCallback(CallbackBase):
@@ -36,17 +33,16 @@ class ResultCallback(CallbackBase):
         host = result._host.get_name()
         self.host_unreachable[host] = result
 
-class Ansible_Play(object):
-    def __init__(self,sources='/etc/ansible/hosts', *args, **kwargs):
+
+class AnsiblePlay(object):
+    def __init__(self, sources='/etc/ansible/hosts'):
         self.sources = sources
         self.variable_manager = None
         self.loader = None
         self.options = None
         self.passwords = None
         self.callback = ResultCallback()
-
         self.results_raw = {}
-
         Options = namedtuple('Options', ['connection', 'module_path', 'forks', 'timeout', 'remote_user',
                                          'ask_pass', 'private_key_file', 'ssh_common_args', 'ssh_extra_args',
                                          'sftp_extra_args',
@@ -62,14 +58,13 @@ class Ansible_Play(object):
 
         self.loader = DataLoader()
         self.passwords = dict(vault_pass='secret')
-
-        self.inventory = InventoryManager( self.loader, self.sources)
+        self.inventory = InventoryManager(self.loader, self.sources)
         # 把inventory传递给variable_manager管理
         self.variable_manager = VariableManager(loader=self.loader, inventory=self.inventory)
 
-    def run_Adhoc(self, hosts, module_name, module_args=''):
+    def run_adhoc(self, hosts, module_name, module_args=''):
         ###########################
-        #run module from andible ad-hoc.
+        # run module from andible ad-hoc.
         ##########################
         play_source = dict(
             name="Ansible Play",

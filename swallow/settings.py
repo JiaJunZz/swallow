@@ -18,7 +18,6 @@ from celery.schedules import crontab
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
@@ -29,7 +28,6 @@ SECRET_KEY = '1+-&ds0jx%6$#2*7clbmfq)i=aqwo4w&1ipx9osqhjz^@lqse3'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -67,13 +65,11 @@ ROOT_URLCONF = 'swallow.urls'
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
-# CORS_ORIGIN_WHITELIST =('*')
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -87,7 +83,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'swallow.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
@@ -125,7 +120,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
@@ -138,7 +132,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
@@ -190,21 +183,22 @@ CELERY_RESULT_SERIALIZER = 'json'
 # celery时区设置
 CELERY_TIMEZONE = 'Asia/Shanghai'
 
-#有些情况可以防止死锁
+# 有些情况可以防止死锁
 CELERY_FORCE_EXECV = True
 
-#允许重试
+# 允许重试
 CELERY_ACKS_LATE = True
 
-#每个worker最多执行100个任务后被销毁，防止内存泄露
+# 每个worker最多执行100个任务后被销毁，防止内存泄露
 CELERY_MAX_TASKS_PER_CHILD = 100
 
 # 单个任务的最大运行时间
 CELERY_TASK_TIME_LIMIT = 12 * 30
 
-#设置并发的worker数量
+# 设置并发的worker数量
 # CELERY_CONCURRENCY = 4
 
+# 定时更新服务器配置时间，默认为15分钟
 CELERYBEAT_SCHEDULE = {
     'autoServer': {
         'task': 'auto_server',
@@ -216,16 +210,19 @@ CELERYBEAT_SCHEDULE = {
     }
 }
 
-# requests setting
+# requests 设置
+# 管理员用户
 REQUEST_USERNAME = 'admin'
-
+# 管理员用户密码
 REQUEST_PASSWORD = 'admin123456'
 
 REQUEST_TOKEN_URL = 'http://192.168.123.173:8000/api-token-auth/'
 
 REQUEST_AUTOSERVER_URL = 'http://192.168.123.173:8000/serverauto/'
 
+# Ansible 设置
 # Ansible Inventory
 ANSIBLE_HOSTS_FILE = '/etc/ansible/hosts'
 
+# 需要定时更新服务器资源的用户组
 ANSIBLE_GROUP = "swallow_servers"

@@ -4,24 +4,22 @@
 # @Author  : ZJJ
 # @Email   : 597105373@qq.com
 
-from core.ansible_api import Ansible_Play
 from multiprocessing import current_process
+from swallow import celery_app
 from .models import Server
 from celery.task import Task
-from swallow import celery_app
-import json
 from django.conf import settings
-
+from core.ansible_api import AnsiblePlay
+import json
 import requests
 
 headers = {"Content-Type": "application/json"}
 
 
-
-
 @celery_app.task
 class AutoServer(Task):
     name = 'auto_server'
+
     def __init__(self):
 
         self.data_server = {
@@ -52,8 +50,9 @@ class AutoServer(Task):
             "driver_name": "",
             "capacity": ""
         }
+
     @staticmethod
-    def getToken():
+    def get_token():
         payload = {
             "username": settings.REQUEST_USERNAME,
             "password": settings.REQUEST_PASSWORD
@@ -65,12 +64,13 @@ class AutoServer(Task):
     def run(self, *args, **kwargs):
         current_process()._config = {'semprefix': '/mp'}
         host_dict = dict(list(Server.objects.values_list('ip_managemant', 'id')))
-        ansible = Ansible_Play(settings.ANSIBLE_HOSTS_FILE)
-        ansible.run_Adhoc(settings.ANSIBLE_GROUP, 'setup')
+        ansible = AnsiblePlay(settings.ANSIBLE_HOSTS_FILE)
+        ansible.run_adhoc(settings.ANSIBLE_GROUP, 'setup')
         info = ansible.get_result().get('success')
-        Authtoken = self.getToken()
-        headers_server = {'content-type': "application/json", 'Authorization': 'Token '+Authtoken}
+        authtoken = self.get_token()
+        headers_server = {'content-type': "application/json", 'Authorization': 'Token ' + authtoken}
         for ip in info:
+            print(ip)
             self.data_server["ip_managemant"] = ip
             self.data_server["hostname"] = info[ip]["ansible_facts"]["ansible_hostname"]
             self.data_server["os_type"] = info[ip]["ansible_facts"]["ansible_distribution"]
@@ -79,7 +79,8 @@ class AutoServer(Task):
             self.data_server["cpu_physics_count"] = info[ip]["ansible_facts"]["ansible_processor_count"]
             self.data_server["cpu_core_count"] = info[ip]["ansible_facts"]["ansible_processor_cores"]
             self.data_server["cpu_logic_count"] = info[ip]["ansible_facts"]["ansible_processor_vcpus"]
-            self.data_server["mem_capacity"] = float("%.2f" % (int(info[ip]["ansible_facts"]["ansible_memtotal_mb"]) / 1024))
+            self.data_server["mem_capacity"] = float(
+                "%.2f" % (int(info[ip]["ansible_facts"]["ansible_memtotal_mb"]) / 1024))
             self.data_server["sn"] = info[ip]["ansible_facts"]["ansible_product_serial"]
             self.data_server["uuid"] = info[ip]["ansible_facts"]["ansible_product_uuid"]
             self.data_server["productmodel"] = info[ip]["ansible_facts"]["ansible_product_name"]
@@ -112,9 +113,7 @@ class AutoServer(Task):
                 url = settings.REQUEST_AUTOSERVER_URL + str(host_dict[ip]) + '/'
                 requests.put(url, data=datas, headers=headers_server)
             else:
+                print("hello")
                 # POST新增服务器
                 datas = json.dumps(self.data_server)
                 requests.post(settings.REQUEST_AUTOSERVER_URL, data=datas, headers=headers_server)
-
-
-

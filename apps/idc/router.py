@@ -10,4 +10,3 @@ from .views import CabinetViewset, IdcViewset
 idc_router = DefaultRouter()
 idc_router.register("idc", IdcViewset, base_name="idc")
 idc_router.register("cabinet", CabinetViewset, base_name="cabinet")
-# idc_router.register("uposition", UpositionViewset, base_name="uposition")
