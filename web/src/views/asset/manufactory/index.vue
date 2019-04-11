@@ -154,6 +154,7 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
 .manufactory {
   padding: 10px;
+  margin-top: 10px;
 }
   .pagination {
     .el-pagination {

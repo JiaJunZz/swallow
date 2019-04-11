@@ -62,6 +62,12 @@ export const constantRouterMap = [
         meta: { title: 'IDC机房' }
       },
       {
+        path: 'cabinet',
+        name: 'Cabinet',
+        component: () => import('@/views/asset/cabinet/index'),
+        meta: { title: '机柜' }
+      },
+      {
         path: 'supplier',
         name: 'supplier',
         component: () => import('@/views/asset/supplier/index'),

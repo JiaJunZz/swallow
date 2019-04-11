@@ -40,17 +40,17 @@
             <el-col :span="12" :offset="1">
               <el-form-item prop="uposition">
                 <el-select
-                  v-model="form.uposition"
+                  v-model="areaArr2"
                   style="width: 100%"
                   filterable
                   multiple
                   placeholder="请选择U位"
                 >
                   <el-option
-                    v-for="item in uoption"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+                    v-for="(item,index) in uoption"
+                    :key="index"
+                    :label="item.name"
+                    :value="item.u_id"
                   ></el-option>
                 </el-select>
               </el-form-item>
@@ -108,8 +108,7 @@ export default {
           cabinet: '',
           uposition: [],
           approach_date: '',
-          expire_date: '',
-          areaArr: []
+          expire_date: ''
         }
       }
     },
@@ -124,6 +123,14 @@ export default {
     ioption: {
       type: Array,
       default: () => []
+    },
+    iarray: {
+      type: Array,
+      default: () => []
+    },
+    uarray: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -131,16 +138,16 @@ export default {
       const data = []
       for (let i = 1; i <= 42; i++) {
         data.push({
-          value: i,
-          label: i
+          u_id: i,
+          name: i
         })
       }
       return data
     }
     return {
       uoption: getUoption(),
-      areaArr: [],
-      selectedData: [],
+      areaArr: this.iarray,
+      areaArr2: this.uarray,
       prop1: {
         label: 'name',
         value: 'id',
@@ -157,17 +164,18 @@ export default {
     }
   },
   watch: {
-    areaArr() {
-      this.form.idc = this.areaArr[0]
-      this.form.cabinet = this.areaArr[1]
+    iarray() {
+      this.areaArr = this.iarray
     },
-    form() {
-
+    uarray() {
+      this.areaArr2 = this.uarray
     }
   },
   methods: {
     submitForm() {
-      delete this.form.areaArr
+      this.form.uposition = this.areaArr2
+      this.form.idc = this.areaArr[0]
+      this.form.cabinet = this.areaArr[1]
       if (this.form.approach_date === '' || this.form.approach_date === null) {
         delete this.form.approach_date
       }

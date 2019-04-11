@@ -70,7 +70,6 @@ class AutoServer(Task):
         authtoken = self.get_token()
         headers_server = {'content-type': "application/json", 'Authorization': 'Token ' + authtoken}
         for ip in info:
-            print(ip)
             self.data_server["ip_managemant"] = ip
             self.data_server["hostname"] = info[ip]["ansible_facts"]["ansible_hostname"]
             self.data_server["os_type"] = info[ip]["ansible_facts"]["ansible_distribution"]
@@ -113,7 +112,6 @@ class AutoServer(Task):
                 url = settings.REQUEST_AUTOSERVER_URL + str(host_dict[ip]) + '/'
                 requests.put(url, data=datas, headers=headers_server)
             else:
-                print("hello")
                 # POST新增服务器
                 datas = json.dumps(self.data_server)
                 requests.post(settings.REQUEST_AUTOSERVER_URL, data=datas, headers=headers_server)
