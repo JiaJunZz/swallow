@@ -16,13 +16,14 @@
   - [Python 3.6.8](https://www.python.org/)
   - [django2.1](https://github.com/django/django)
   - [DjangoRestFramework3.9.1](https://github.com/encode/django-rest-framework)
-  - [Celery4.3.0](https://github.com/celery/celery) + [Redis5](https://github.com/antirez/redis)
+  - [Celery4.3.0](https://github.com/celery/celery)
+  - [Redis5](https://github.com/antirez/redis)
   - [Ansible2.7](https://github.com/ansible/ansible)
   - [MariaDB](https://mariadb.org/)
 ### 前端
   - [vue](https://github.com/vuejs/vue)
   - [element-ui](https://github.com/ElemeFE/element)
-  - [vue-admin-template](https://github.com/PanJiaChen/vue-admin-template)模板（特别感谢大神的基础模板!!!）
+  - [vue-admin-template](https://github.com/PanJiaChen/vue-admin-template)
 
 ## 前序准备
 
