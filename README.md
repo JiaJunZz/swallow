@@ -110,7 +110,7 @@ module.exports = {
       }
 ```
 
-修改配置文件 /etc/ansible/hosts
+修改配置文件 /etc/ansible/hosts，用于自动收集服务器信息
 ```bash
 [swallow_servers]
 192.168.123.168 ansible_python_interpreter="/usr/bin/python2"
