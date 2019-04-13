@@ -32,6 +32,18 @@
                 <el-button slot="reference" type="text">{{ props.row.nic.length }}</el-button>
               </el-popover>
             </el-form-item>
+            <el-form-item label="硬盘">
+              <el-popover
+                placement="right-start"
+                width="200"
+                trigger="hover">
+                <el-table :data="props.row.driver">
+                  <el-table-column width="80" property="driver_name" label="设备名"></el-table-column>
+                  <el-table-column width="80" property="capacity" label="硬盘大小"></el-table-column>
+                </el-table>
+                <el-button slot="reference" type="text">{{ props.row.driver.length }}</el-button>
+              </el-popover>
+            </el-form-item>
             <el-form-item label="序列号">
               <span>{{ props.row.sn }}</span>
             </el-form-item>
@@ -114,13 +126,6 @@
         min-width="180">
         <template slot-scope="scope">
           <span>{{ scope.row.mem_capacity }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="硬盘容量(GB)"
-        min-width="180">
-        <template slot-scope="scope">
-          <span>{{ scope.row.disk_capacity }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" min-width="150">

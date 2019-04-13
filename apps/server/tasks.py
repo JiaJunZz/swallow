@@ -99,9 +99,9 @@ class AutoServer(Task):
             nic_list.append(self.interfaces)
             self.data_server["nic"] = nic_list
             all_devices = info[ip]["ansible_facts"]["ansible_devices"]
-            device_sd = [x for x in all_devices if x.startswith("sd")]
+            devices = [x for x in all_devices if x.startswith("sd") or x.startswith("hd")]
             device_list = []
-            for d in device_sd:
+            for d in devices:
                 self.device_dict["driver_name"] = d
                 self.device_dict["capacity"] = info[ip]["ansible_facts"]["ansible_devices"][d]["size"]
                 device_list.append(self.device_dict)

@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-form ref="form" :model="form" :rules="rules" label-width="100px" class="idc-form">
-      <el-form-item label="用户组名" prop="name">
+      <el-form-item label="组名" prop="name">
         <el-input v-model="form.name" placeholder="请输入组名"></el-input>
       </el-form-item>
       <el-form-item class="button-right">

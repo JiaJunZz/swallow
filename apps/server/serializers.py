@@ -233,7 +233,7 @@ class ServerSerializer(serializers.ModelSerializer):
         ret = super(ServerSerializer, self).to_representation(instance)
         nic_list = []
         u_list = []
-        dirver_list = []
+        driver_list = []
 
         for nic_obj in nic_queryset:
             nic_list.append({
@@ -245,12 +245,12 @@ class ServerSerializer(serializers.ModelSerializer):
             })
         ret["nic"] = nic_list
         for driver_obj in driver_queryset:
-            dirver_list.append({
+            driver_list.append({
                 "driver_id": driver_obj.id,
                 "driver_name": driver_obj.driver_name,
                 "capacity": driver_obj.capacity,
             })
-        ret["dirver"] = dirver_list
+        ret["driver"] = driver_list
         if supplier_obj:
             ret["supplier"] = {
                 "supplier_id": supplier_obj.id,

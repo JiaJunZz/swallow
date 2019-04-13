@@ -19,8 +19,6 @@ class Server(models.Model):
     cpu_logic_count = models.SmallIntegerField("逻辑CPU个数", help_text="逻辑CPU个数", blank=True, null=True)
     mem_capacity = models.DecimalField("内存大小(GB)", max_digits=10, decimal_places=2, help_text="内存大小(GB)", blank=True,
                                        null=True)
-    # disk_capacity = models.DecimalField("硬盘容量(GB)", max_digits=10, decimal_places=2, help_text="硬盘容量(GB)", blank=True,
-    #                                     null=True)
     sn = models.CharField("序列号", max_length=128, db_index=True, help_text="序列号", blank=True, null=True)
     uuid = models.CharField("UUID", max_length=128, db_index=True, blank=True, null=True, help_text="UUID")
     productmodel = models.ForeignKey(ProductModel, on_delete=models.DO_NOTHING, verbose_name="设备型号", null=True,

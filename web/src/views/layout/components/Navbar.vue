@@ -8,7 +8,7 @@
         <i class="el-icon-caret-bottom"/>
       </div>
       <el-dropdown-menu slot="dropdown" class="user-dropdown">
-        <router-link class="inlineBlock" to="/">
+        <router-link class="inlineBlock" to="/perm/user">
           <el-dropdown-item>
             Home
           </el-dropdown-item>

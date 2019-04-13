@@ -9,7 +9,7 @@
         <el-col :span="8"><div class="grid-content bg-purple"></div></el-col>
         <el-col :span="6">
           <div class="grid-content bg-purple">
-            <el-input v-model="params.name" placeholder="请输入内容" class="input-with-select" @keyup.enter.native="handleFilter">
+            <el-input v-model="params.name" placeholder="请输入组名" class="input-with-select" @keyup.enter.native="handleFilter">
               <el-button slot="append" icon="el-icon-search" @click="handleFilter"></el-button>
             </el-input>
           </div>

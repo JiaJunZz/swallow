@@ -5,7 +5,7 @@
       :data="values"
       style="width: 100%">
       <el-table-column
-        label="用户组名"
+        label="组名"
         min-width="150"
       >
         <template slot-scope="scope">
