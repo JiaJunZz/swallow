@@ -43,7 +43,7 @@ cd Swallow/
 # 安装后端依赖
 pip install -r requirements.txt
 
-# 迁移数据库
+# 迁移数据库，如果出现问题可以删除migrations/下migrations的py代码
 python manage.py makemigrations
 python manage.py migrate
 
