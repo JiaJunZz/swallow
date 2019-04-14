@@ -93,7 +93,7 @@ DATABASES = {
         'NAME': 'swallow',
         'USER': 'root',
         'PASSWORD': '123456',
-        'HOST': '127.0.0.1',
+        'HOST': 'db',
         'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
@@ -156,10 +156,10 @@ REST_FRAMEWORK = {
 
 # celery settting
 # celery中间件 redis://redis服务所在的ip地址:端口/数据库号
-BROKER_URL = 'redis://192.168.123.173:6381'
+BROKER_URL = 'redis://redis-server'
 
 # celery结果返回，可用于跟踪结果
-CELERY_RESULT_BACKEND = 'redis://192.168.123.173:6381'
+CELERY_RESULT_BACKEND = 'redis://redis-server'
 
 CELERY_QUEUES = {
     'beat_autoServer': {
@@ -216,9 +216,9 @@ REQUEST_USERNAME = 'admin'
 # 管理员用户密码
 REQUEST_PASSWORD = 'admin123456'
 
-REQUEST_TOKEN_URL = 'http://192.168.123.173:8000/api-token-auth/'
+REQUEST_TOKEN_URL = 'http://127.0.0.1:8000/api-token-auth/'
 
-REQUEST_AUTOSERVER_URL = 'http://192.168.123.173:8000/serverauto/'
+REQUEST_AUTOSERVER_URL = 'http://127.0.0.1:8000/serverauto/'
 
 # Ansible 设置
 # Ansible Inventory
