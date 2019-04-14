@@ -88,8 +88,10 @@ REQUEST_USERNAME = 'admin'
 # 管理员用户密码
 REQUEST_PASSWORD = 'admin123456'
 
+# 获取token的url
 REQUEST_TOKEN_URL = 'http://192.168.123.173:8000/api-token-auth/'
 
+# 服务器数据自动提交的API接口
 REQUEST_AUTOSERVER_URL = 'http://192.168.123.173:8000/serverauto/'
 
 ```
