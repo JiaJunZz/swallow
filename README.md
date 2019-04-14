@@ -77,10 +77,10 @@ DATABASES = {
     }
 }
 # celery中间件 redis://redis服务所在的ip地址:端口/数据库号
-BROKER_URL = 'redis://192.168.123.173:6381'
+BROKER_URL = 'redis:/127.0.0.1:6379'
 
 # celery结果返回，可用于跟踪结果
-CELERY_RESULT_BACKEND = 'redis://192.168.123.173:6381'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
 
 # 管理用户
 REQUEST_USERNAME = 'admin'
@@ -89,10 +89,10 @@ REQUEST_USERNAME = 'admin'
 REQUEST_PASSWORD = 'admin123456'
 
 # 获取token的url
-REQUEST_TOKEN_URL = 'http://192.168.123.173:8000/api-token-auth/'
+REQUEST_TOKEN_URL = 'http://127.0.0.1:8000/api-token-auth/'
 
 # 服务器数据自动提交的API接口
-REQUEST_AUTOSERVER_URL = 'http://192.168.123.173:8000/serverauto/'
+REQUEST_AUTOSERVER_URL = 'http://127.0.0.1:8000/serverauto/'
 
 ```
 
@@ -108,7 +108,7 @@ module.exports = merge(prodEnv, {
 ```js
 module.exports = {
   dev: {
-    host: '192.168.123.173',
+    host: '127.0.0.1',
     port: 9528,
       }
 ```
