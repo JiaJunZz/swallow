@@ -1,10 +1,10 @@
 # swallow
 
-[swallow](https://github.com/zshengsheng/Swallow)是一个后端基于[django](https://github.com/django/django)和[DjangoRestFramework](https://github.com/encode/django-rest-framework)，前端基于[vue](https://github.com/vuejs/vue)和[element-ui](https://github.com/ElemeFE/element)实现的应用，主要面向linux运维工程师使用，管理linux资产信息。
+[swallow](https://github.com/JiaJunZz/Swallow)是一个后端基于[django](https://github.com/django/django)和[DjangoRestFramework](https://github.com/encode/django-rest-framework)，前端基于[vue](https://github.com/vuejs/vue)和[element-ui](https://github.com/ElemeFE/element)实现的应用，主要面向linux运维工程师使用，管理linux资产信息。
 
 ## 演示
 
-![demo](https://github.com/zshengsheng/JiaJun.zz.github.io/blob/master/images/Swallow/demo.gif)
+![demo](https://github.com/JiaJunZz/JiaJun.zz.github.io/blob/master/images/Swallow/demo.gif)
 
 ## 功能特性
 
@@ -37,7 +37,7 @@
 ### 安装
 ```bash
 # 克隆项目
-git clone git@github.com:zshengsheng/Swallow.git
+git clone git@github.com:JiaJunZz/Swallow.git
 
 # 进入项目目录
 cd Swallow/
@@ -142,13 +142,13 @@ http://192.168.123.173:9528/#/login
 ```
 http://127.0.0.1:8000
 ```
-![router](https://github.com/zshengsheng/JiaJun.zz.github.io/blob/master/images/Swallow/router.jpg)
+![router](https://github.com/JiaJunZz/JiaJun.zz.github.io/blob/master/images/Swallow/router.jpg)
 
 ## API Doc
 ```
 http://127.0.0.1:8000/docs
 ```
-![apidoc](https://github.com/zshengsheng/JiaJun.zz.github.io/blob/master/images/Swallow/apidoc.jpg)
+![apidoc](https://github.com/JiaJunZz/JiaJun.zz.github.io/blob/master/images/Swallow/apidoc.jpg)
 
 ## Browsers support
 
