@@ -4,7 +4,7 @@
       <el-form-item label="组名" prop="name">
         <el-input v-model="form.name" :readonly="true" ></el-input>
       </el-form-item>
-      <el-form-item label="权限列表" prop="perm">
+      <el-form-item label="用户组" prop="perm">
         <el-transfer
           ref="trans"
           v-model="permList"

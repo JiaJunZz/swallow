@@ -4,6 +4,9 @@
       <el-form-item label="用户名" prop="username">
         <el-input v-model="form.username" placeholder="请输入用户名"></el-input>
       </el-form-item>
+      <el-form-item label="密码" prop="password">
+        <el-input v-model="form.password" placeholder="请输入密码"></el-input>
+      </el-form-item>
       <el-form-item label="姓名" prop="name">
         <el-input v-model="form.name" placeholder="请输入姓名"></el-input>
       </el-form-item>
@@ -34,7 +37,8 @@ export default {
           username: '',
           name: '',
           email: '',
-          phone: ''
+          phone: '',
+          password: ''
         }
       }
     },
@@ -54,7 +58,7 @@ export default {
     return {
       rules: {
         username: [
-          { required: true, message: '请输入机房名称', trigger: 'blur' },
+          { required: true, message: '请输入用户名', trigger: 'blur' },
           { validator: validateInput, trigger: ['change', 'blur'] },
           { max: 150, message: '长度不能超过150个字符', trigger: 'blur' }
         ],
@@ -66,6 +70,9 @@ export default {
         ],
         phone: [
           { max: 16, message: '长度不能超过16个字符', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' }
         ]
       }
     }

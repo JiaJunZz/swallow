@@ -14,10 +14,11 @@ class UserSerializer(serializers.ModelSerializer):
     """
     用户序列化类
     """
+    password = serializers.CharField(write_only=True,required=True,label="密码", help_text="密码")
 
     class Meta:
         model = User
-        fields = ("id", "username", "name", "email", "phone")
+        fields = ("id", "username", "name", "email", "phone", "password","is_superuser")
 
     def to_representation(self, instance):
         """
@@ -33,6 +34,20 @@ class UserSerializer(serializers.ModelSerializer):
             })
         ret['groups'] = group_list
         return ret
+
+    def create(self, validated_data):
+        user_obj = super(UserSerializer, self).create(validated_data)
+        user_obj.set_password(validated_data['password'])
+        user_obj.save()
+        return user_obj
+
+
+class ChangeUserPasswdSerializer(serializers.Serializer):
+    """
+    更改用户密码序列化类
+    """
+    old_password = serializers.CharField(required=False,write_only=True)
+    new_password = serializers.CharField(required=True, write_only=True)
 
 
 class GroupsSerializer(serializers.ModelSerializer):

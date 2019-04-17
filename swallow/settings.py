@@ -93,7 +93,7 @@ DATABASES = {
         'NAME': 'swallow',
         'USER': 'root',
         'PASSWORD': '123456',
-        'HOST': 'db',
+        'HOST': '127.0.0.1',
         'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
@@ -156,10 +156,10 @@ REST_FRAMEWORK = {
 
 # celery settting
 # celery中间件 redis://redis服务所在的ip地址:端口/数据库号
-BROKER_URL = 'redis://redis-server'
+BROKER_URL = 'redis://127.0.0.1:6381'
 
 # celery结果返回，可用于跟踪结果
-CELERY_RESULT_BACKEND = 'redis://redis-server'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6381'
 
 CELERY_QUEUES = {
     'beat_autoServer': {

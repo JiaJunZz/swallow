@@ -4,11 +4,14 @@
 # @Author  : ZJJ
 # @Email   : 597105373@qq.com
 
-from .views import UserViewset, GroupsViewset, UserGroupViewset, GroupMemberViewset, PermissionViewset, GroupPermViewset
+from .views import UserViewset, ChangeUserPasswdView, GroupsViewset, UserGroupViewset, GroupMemberViewset, \
+    PermissionViewset, GroupPermViewset, PersonalInfoViewset
 from rest_framework.routers import DefaultRouter
 
 permcontrol_router = DefaultRouter()
+permcontrol_router.register("personinfo", PersonalInfoViewset, base_name="personinfo")
 permcontrol_router.register("users", UserViewset, base_name="users")
+permcontrol_router.register("chuserpasswd", ChangeUserPasswdView, base_name="chuserpasswd")
 permcontrol_router.register("groups", GroupsViewset, base_name="groups")
 permcontrol_router.register("usergroup", UserGroupViewset, base_name="usergroup")
 permcontrol_router.register("groupmember", GroupMemberViewset, base_name="groupmember")

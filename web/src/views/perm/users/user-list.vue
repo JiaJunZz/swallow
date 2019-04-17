@@ -46,7 +46,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="操作" min-width="250">
+      <el-table-column label="操作" min-width="300">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -59,6 +59,10 @@
             size="mini"
             type="danger"
             @click="userDelete(scope.row)">删除</el-button>
+          <el-button
+            size="mini"
+            type="warning"
+            @click="passEdit(scope.row)">修改密码</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -81,6 +85,9 @@ export default {
     }
   },
   methods: {
+    passEdit(user) {
+      this.$emit('editPass', user)
+    },
     userEdit(user) {
       this.$emit('edit', user)
     },

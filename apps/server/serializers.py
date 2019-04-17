@@ -196,7 +196,6 @@ class ServerSerializer(serializers.ModelSerializer):
         server_obj.u_server.set(u_list)
 
     def create(self, validated_data):
-        print(validated_data)
         try:
             uposition_data = validated_data.pop('uposition')
             # cabinet_id = validated_data.pop()

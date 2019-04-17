@@ -2,12 +2,28 @@ from django.contrib.auth.models import Group, Permission
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets, mixins, status
 from rest_framework.response import Response
-from rest_framework.authentication import SessionAuthentication
-from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions, DjangoObjectPermissions
-from .serializers import UserSerializer, GroupsSerializer, PermissionSerializer
+from .serializers import UserSerializer, GroupsSerializer, PermissionSerializer, ChangeUserPasswdSerializer
 from .filter import UsersFilter, GroupsFilter
 
 User = get_user_model()
+
+
+class PersonalInfoViewset(viewsets.ReadOnlyModelViewSet):
+    """
+    list:
+        返回登录用户信息
+    """
+
+    queryset = User.objects.all().order_by('id')
+    serializer_class = UserSerializer
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def list(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 
 class UserViewset(viewsets.ModelViewSet):
@@ -30,6 +46,42 @@ class UserViewset(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     filter_class = UsersFilter
     filter_fields = ("username", "email", "name")
+
+
+class ChangeUserPasswdView(viewsets.GenericViewSet,
+                           mixins.UpdateModelMixin):
+    """
+    更新用户的密码
+    """
+    queryset = User.objects.all().order_by('id')
+    serializer_class = ChangeUserPasswdSerializer
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        serializer = ChangeUserPasswdSerializer(self.object, data=request.data)
+        change_user = User.objects.get(pk=kwargs['pk'])
+        print(change_user)
+
+        if serializer.is_valid():
+            if self.object.is_superuser is True:
+                print('sup')
+                change_user.set_password(serializer.validated_data.get("new_password"))
+            elif self.object.is_superuser is False and self.object == change_user:
+                old_password = serializer.validated_data.get("old_password", [])
+                if not change_user.check_password(old_password):
+                    return Response("旧密码输入错误",
+                                    status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    change_user.set_password(serializer.validated_data.get("new_password"))
+            elif self.object.is_superuser is False and self.object != change_user:
+                return Response("只允许管理员或所属用户修改",
+                                status=status.HTTP_401_UNAUTHORIZED)
+            change_user.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserGroupViewset(viewsets.GenericViewSet,

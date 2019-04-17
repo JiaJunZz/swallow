@@ -43,3 +43,12 @@ export function updateUserGroup(id, data) {
     data
   })
 }
+
+// 更新用户的属组
+export function changeUserPass(id, data) {
+  return request({
+    url: '/chuserpasswd/' + id + '/',
+    method: 'put',
+    data
+  })
+}

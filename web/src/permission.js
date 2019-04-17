@@ -13,7 +13,7 @@ router.beforeEach((to, from, next) => {
       next({ path: '/' })
       NProgress.done()
     } else {
-      if (store.getters.name === ' ') {
+      if (store.getters.username === '') {
         store.dispatch('GetInfo').then(res => {
           next({ ...to, replace: true })
         }).catch((err) => {

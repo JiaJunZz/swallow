@@ -13,7 +13,7 @@ export function login(username, password) {
 
 export function getInfo(token) {
   return request({
-    url: '/users/',
+    url: '/personinfo/',
     method: 'get',
     params: { token }
   })

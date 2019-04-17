@@ -4,17 +4,21 @@ import { getToken, setToken, removeToken } from '@/utils/auth'
 const user = {
   state: {
     token: getToken(),
-    name: '',
+    username: '',
     avatar: '',
-    roles: []
+    roles: [],
+    is_superuser: ''
   },
 
   mutations: {
     SET_TOKEN: (state, token) => {
       state.token = token
     },
-    SET_NAME: (state, name) => {
-      state.name = name
+    SET_USERNAME: (state, username) => {
+      state.username = username
+    },
+    SET_IS_SUPERUSER: (state, is_superuser) => {
+      state.is_superuser = is_superuser
     },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
@@ -43,14 +47,8 @@ const user = {
     GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
         getInfo(state.token).then(response => {
-          const data = response.data
-          if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-            commit('SET_ROLES', data.roles)
-          } else {
-            reject('getInfo: roles must be a non-null array !')
-          }
-          commit('SET_NAME', data.name)
-          commit('SET_AVATAR', data.avatar)
+          commit('SET_USERNAME', response.username)
+          commit('SET_IS_SUPERUSER', response.is_superuser)
           resolve(response)
         }).catch(error => {
           reject(error)

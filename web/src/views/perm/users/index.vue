@@ -16,7 +16,7 @@
         </el-col>
         <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
       </el-row>
-      <user-list :values="user" :loading="loading" @edit="handleUpdate" @editGroup="handleUpdateGroup" @delete="handleDelete"></user-list>
+      <user-list :values="user" :loading="loading" @edit="handleUpdate" @editGroup="handleUpdateGroup" @editPass="handelChangePass" @delete="handleDelete"></user-list>
       <el-dialog
         :visible.sync="dialogVisibleCreate"
         title="创建用户"
@@ -35,6 +35,12 @@
         width="50%">
         <update-ugroup :form="detailForm" :glist.sync="groupList" :goption="groupOption" @submit="handleSubmitUpdateUserGroup" @cancel="handleGroupCancel"></update-ugroup>
       </el-dialog>
+      <el-dialog
+        :visible.sync="dialogVisiblePass"
+        title="修改密码"
+        width="50%">
+        <change-pass :form="passForm" @submit="handleChangeUserPass" @cancel="handleChangePassCancel"></change-pass>
+      </el-dialog>
       <div class="pagination">
         <el-pagination
           :current-page="currentPage1"
@@ -47,15 +53,16 @@
 </div></template>
 
 <script>
-import { getUserList, createUser, updateUser, deleteUser, updateUserGroup } from '@/api/users'
+import { getUserList, createUser, updateUser, deleteUser, updateUserGroup, changeUserPass } from '@/api/users'
 import { getGroupList } from '@/api/groups'
 import UserList from './user-list'
 import UserForm from './user-form'
 import UpdateUgroup from './update-ugroup'
+import ChangePass from './change-upass'
 
 export default {
   name: 'User',
-  components: { UserList, UserForm, UpdateUgroup },
+  components: { UserList, UserForm, UpdateUgroup, ChangePass },
   data() {
     return {
       groupList: [],
@@ -64,7 +71,9 @@ export default {
       dialogVisibleCreate: false,
       dialogVisibleUpdate: false,
       dialogVisibleGroup: false,
+      dialogVisiblePass: false,
       loading: true,
+      passForm: {},
       detailForm: {},
       createString: '立即创建',
       updateString: '立即更新',
@@ -192,6 +201,34 @@ export default {
           })
         }
       )
+    },
+    handleChangeUserPass(id, value) {
+      // 修改用户密码
+      changeUserPass(id, value).then(
+        () => {
+          this.dialogVisiblePass = false
+          this.fetchData()
+          this.$message({
+            type: 'success',
+            message: '修改成功'
+          })
+        },
+        error => {
+          this.$message({
+            type: 'error',
+            message: error.response.data
+          })
+        }
+      )
+    },
+    handelChangePass(value) {
+      // 修改密码弹窗
+      this.dialogVisiblePass = true
+      this.passForm = value
+    },
+    handleChangePassCancel() {
+      this.dialogVisiblePass = false
+      this.fetchData()
     },
     handleCreateCancel() {
       // 创建用户取消按钮
