@@ -61,7 +61,7 @@ npm install node-sass --unsafe-perm
 ```
 
 ### 配置
-修改配置文件Swallow/swallow/settings.py
+配置文件Swallow/swallow/settings.py，修改连接数据库server的配置信息
 ```python
 DATABASES = {
     'default': {
@@ -96,19 +96,19 @@ REQUEST_AUTOSERVER_URL = 'http://127.0.0.1:8000/serverauto/'
 
 ```
 
-修改配置文件 swallow/web/config/dev.env.js 
+配置文件 swallow/web/config/dev.env.js，修改连接后端的IP地址和端口
 ```js
 module.exports = merge(prodEnv, {
   NODE_ENV: '"development"',
-  BASE_API: '"http://192.168.123.173:8000"',
+  BASE_API: '"http://127.0.0.1:8000"',
 })
 ```
 
-修改配置文件 swallow/web/config/index.js
+配置文件 swallow/web/config/index.js，修改浏览器连接的地址
 ```js
 module.exports = {
   dev: {
-    host: '127.0.0.1',
+    host: '192.168.123.173',
     port: 9528,
       }
 ```
