@@ -9,7 +9,9 @@
 ## 功能特性
 
   - 服务器信息自动定时采集
-  - celery异步队列，加快响应用户队列时间
+  - celery异步队列
+  - RBAC基于角色的权限访问控制
+  - RESTful API
 
 ## 技术栈
 
@@ -104,7 +106,7 @@ module.exports = merge(prodEnv, {
 })
 ```
 
-配置文件 swallow/web/config/index.js，修改浏览器连接的地址
+配置文件 swallow/web/config/index.js，修改浏览器登录的地址
 ```js
 module.exports = {
   dev: {
@@ -128,6 +130,33 @@ celery -A swallow worker -B -l INFO
 cd web/
 npm run dev
 ```
+
+## 浏览器登录
+
+```
+http://192.168.123.173:9528/#/login
+```
+
+## API router
+
+```
+http://127.0.0.1:8000
+```
+![router](https://github.com/zshengsheng/JiaJun.zz.github.io/blob/master/images/Swallow/router.jpg)
+
+## API Doc
+```
+http://127.0.0.1:8000/docs
+```
+![apidoc](https://github.com/zshengsheng/JiaJun.zz.github.io/blob/master/images/Swallow/apidoc.jpg)
+
+## Browsers support
+
+Modern browsers and Internet Explorer 10+.
+
+| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari |
+| --------- | --------- | --------- | --------- |
+| IE10, IE11, Edge| last 2 versions| last 2 versions| last 2 versions
 
 ## License
 
