@@ -45,13 +45,6 @@ cd Swallow/
 # 安装后端依赖
 pip install -r requirements.txt
 
-# 迁移数据库，如果出现问题可以删除migrations/下migrations的py代码
-python manage.py makemigrations
-python manage.py migrate
-
-# 创建后台管理员用户
-python manage.py createsuperuser
-
 # 进入前端目录
 cd web/
 
@@ -125,6 +118,11 @@ module.exports = {
 
 ```bash
 cd swallow
+# 迁移数据库，如果出现问题可以删除migrations/下migrations的py代码
+python manage.py makemigrations
+python manage.py migrate
+# 创建后台管理员用户
+python manage.py createsuperuser
 python manage.py runserver 0.0.0.0:8000
 celery -A swallow worker -B -l INFO
 cd web/
