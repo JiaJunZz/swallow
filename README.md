@@ -22,7 +22,7 @@
   - [Celery4.3.0](https://github.com/celery/celery)
   - [Redis5](https://github.com/antirez/redis)
   - [Ansible2.7](https://github.com/ansible/ansible)
-  - [MariaDB](https://mariadb.org/)
+  - [MariaDB10.1.37](https://mariadb.org/)
 ### 前端
   - [vue](https://github.com/vuejs/vue)
   - [element-ui](https://github.com/ElemeFE/element)
