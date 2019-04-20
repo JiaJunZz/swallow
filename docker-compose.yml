@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  db:
+    image: mariadb:10.1.38-bionic
+    volumes:
+      - swallow-db:/var/lib/mysql
+    networks:
+      - swallow-network
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=swallow
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+  
+  redis:
+    image: redis:5.0.4-alpine
+    networks:
+      - swallow-network
+  
+  django:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    networks:
+      - swallow-network
+
+  vue:
+    build: ./web/.
+    ports:
+      - "9528:9528"
+    networks:
+      - swallow-network
+
+networks:
+  swallow-network:
+
+volumes:
+  swallow-db:
