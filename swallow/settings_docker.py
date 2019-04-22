@@ -218,9 +218,9 @@ REQUEST_USERNAME = 'admin'
 # 管理员用户密码
 REQUEST_PASSWORD = 'admin123456'
 
-REQUEST_TOKEN_URL = 'http://192.168.123.173:8000/api-token-auth/'
+REQUEST_TOKEN_URL = 'http://192.168.123.173:8001/api-token-auth/'
 
-REQUEST_AUTOSERVER_URL = 'http://192.168.123.173:8000/serverauto/'
+REQUEST_AUTOSERVER_URL = 'http://192.168.123.173:8001/serverauto/'
 
 # Ansible 设置
 # Ansible Inventory

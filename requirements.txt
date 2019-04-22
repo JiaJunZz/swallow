@@ -25,6 +25,7 @@ jedi==0.13.2
 Jinja2==2.10
 kombu==4.5.0
 MarkupSafe==1.1.0
+meld3==1.0.2
 mysqlclient==1.4.1
 paramiko==2.4.2
 parso==0.3.1
@@ -46,8 +47,10 @@ request==2019.3.22
 requests==2.21.0
 six==1.12.0
 sqlparse==0.3.0
+supervisor==4.0.2
 traitlets==4.3.2
 uritemplate==3.0.0
 urllib3==1.24.1
+uWSGI==2.0.18
 vine==1.3.0
 wcwidth==0.1.7
