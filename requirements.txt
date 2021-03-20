@@ -22,7 +22,7 @@ ipython==7.2.0
 ipython-genutils==0.2.0
 itypes==1.1.0
 jedi==0.13.2
-Jinja2==2.10
+Jinja2==2.11.3
 kombu==4.5.0
 MarkupSafe==1.1.0
 meld3==1.0.2
