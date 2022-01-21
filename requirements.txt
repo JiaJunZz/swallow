@@ -18,7 +18,7 @@ django-filter==2.1.0
 djangorestframework==3.9.1
 get==2019.3.22
 idna==2.8
-ipython==7.2.0
+ipython==7.16.3
 ipython-genutils==0.2.0
 itypes==1.1.0
 jedi==0.13.2
